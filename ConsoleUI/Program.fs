@@ -2,7 +2,7 @@
 
 open System
 open Chess
-open Board
+open BoardModule
 open State
 
 let getGlyph (piece:Piece option) =
@@ -28,7 +28,7 @@ let getGlyph (piece:Piece option) =
       | King ->   '♚'
 let printState (state:State): unit =
   Console.Clear()
-  for square in state.Board.Squares do
+  for square in state.ChessBoard.Squares do
     let x,y = square.Position
     Console.SetCursorPosition(x,y)
     printf "%c" (getGlyph square.Piece)
@@ -38,6 +38,7 @@ let printState (state:State): unit =
 let rec gameLoop (agent:State.Agent) =
   match Console.ReadKey(true).Key with
     | ConsoleKey.N -> agent.SendCommand (LogText "command N")
+    | ConsoleKey.M -> agent.SendCommand (AddPiece (White, Rook))
     | _ -> agent.SendCommand (LogText "hittade inte commandet")
   gameLoop agent
 [<EntryPoint>]
