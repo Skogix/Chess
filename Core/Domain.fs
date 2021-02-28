@@ -1,9 +1,13 @@
 module Chess
 
+open System
+module Helpers =
+  let getColFromPosition pos = (pos / 10) % 10
+  let getRowFromPosition pos = (pos / 1) % 10
 type Color = | White | Black
-type BoardIndex = int
 type Row = int
 type Col = int
+type Position = int
 type Notation = string
 type PieceType =
   | Pawn
@@ -16,34 +20,42 @@ type Piece = {
   Color: Color
   PieceType: PieceType
 }
-module Board =
-  let indexToCol i: Col = (i/10)%10
-  let indexToRow i: Row = (i/1)%10
-  let indexToNotation i: Notation = 
-      let col =
-        match indexToCol i with
-        | 1 -> 'A'
-        | 2 -> 'B'
-        | 3 -> 'C'
-        | 4 -> 'D'
-        | 5 -> 'E'
-        | 6 -> 'F'
-        | 7 -> 'G'
-        | 8 -> 'H'
-        | _ -> ' '
-      let row =
-        match indexToRow i with
-        | 1 -> '1'
-        | 2 -> '2'
-        | 3 -> '3'
-        | 4 -> '4'
-        | 5 -> '5'
-        | 6 -> '6'
-        | 7 -> '7'
-        | 8 -> '8'
-        | _ -> ' '
-      (col.ToString() + row.ToString())
-  let boardIndex: BoardIndex list = 
+type Square = {
+  Position: Position
+  Piece: Piece option
+} with
+  member this.Col = Helpers.getColFromPosition this.Position
+  member this.Row = Helpers.getRowFromPosition this.Position
+  member this.Notation = 
+    let col =
+      match this.Col with
+      | 1 -> 'A'
+      | 2 -> 'B'
+      | 3 -> 'C'
+      | 4 -> 'D'
+      | 5 -> 'E'
+      | 6 -> 'F'
+      | 7 -> 'G'
+      | 8 -> 'H'
+      | _ -> ' '
+    let row =
+      match this.Row with
+      | 1 -> '1'
+      | 2 -> '2'
+      | 3 -> '3'
+      | 4 -> '4'
+      | 5 -> '5'
+      | 6 -> '6'
+      | 7 -> '7'
+      | 8 -> '8'
+      | _ -> ' '
+    (col.ToString() + row.ToString())
+type Board = {
+  Squares: Square list
+} with
+  member this.Square x = this.Squares.[x]
+module BoardModule =
+  let boardPositions: Position list = 
       [81..88] @
       [71..78] @
       [61..68] @
@@ -52,20 +64,8 @@ module Board =
       [31..38] @
       [21..28] @
       [11..18]
-  type Square = {
-    Position: BoardIndex
-    Piece: Piece option
-  } with
-    member this.Column = indexToCol this.Position
-    member this.Row = indexToRow this.Position
-    member this.Index = this.Position
-    member this.Notation = indexToNotation this.Position
-    // todo; map istället?
-  type Board = {
-    Squares: Square list
-  }
-  let getInitPiece (index:BoardIndex) =
-    match (indexToRow index, indexToCol index) with
+  let getInitPiece (pos:Position) =
+    match (Helpers.getRowFromPosition pos, Helpers.getColFromPosition pos) with
     | _, 2 -> Some { Color = Black; PieceType = Pawn }
     | _, 7 -> Some { Color = White; PieceType = Pawn }
     | x, 1 ->
@@ -85,28 +85,21 @@ module Board =
       | 5     -> Some {Color = White; PieceType = King}
       | _ -> failwith "inte en startpos"
     | _, _ -> None
-  let initBoard = {Squares = [
-    for i in boardIndex do
-      {
-        Position = i
-        Piece = getInitPiece i
-      }
-  ]}
-  let emptyBoard = {Squares = [
-    for i in boardIndex do
-      {
-        Position = i
-        Piece = None
-      }
-  ]}
-
+  let initBoard =
+    let squares = [for i in boardPositions do { Position = i
+                                                Piece = getInitPiece i }]
+    {Squares = squares}
+  let emptyBoard =
+    let squares = [for i in boardPositions do {Position = i
+                                               Piece = None}]
+    {Squares = squares}
 module State =
   type Command =
     | PostText of string
-    | GetBoard of AsyncReplyChannel<Board.Board>
-  type CommandAgent (init:Board.Board) =
+    | GetBoard of AsyncReplyChannel<Board>
+  type CommandAgent (init:Board) =
     let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
-      let rec loop (oldBoard:Board.Board) = async {
+      let rec loop (oldBoard:Board) = async {
         let! command = inbox.Receive()
         match command with
         | PostText x -> printfn "%A" x

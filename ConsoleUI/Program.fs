@@ -1,7 +1,7 @@
 ﻿open System
 open System.Collections.Generic
 open Chess
-open Chess.Board
+open Chess.BoardModule
 
 let getGlyph (piece:Piece option) =
   match piece with
@@ -24,29 +24,14 @@ let getGlyph (piece:Piece option) =
       | Rook ->   '♜'
       | Queen ->  '♛'
       | King ->   '♚'
-//let printBoard (board:Square list) f =
-//  for s in board do
-//    printf "%A " f
-//    if s.Row = 8 then printfn ""
-let printBoard (board:Board.Board) =
-  for s in board.Squares do
-    printf "%c" (getGlyph s.Piece)
-    if s.Row = 8 then printfn ""
-let printIndicies (board:Board) =
-  for s in board.Squares do
-    printf "%i " s.Index
-    if s.Row = 8 then printfn ""
-let printNotations (board:Board.Board) =
-  for s in board.Squares do
-    printf "%s " s.Notation
-    if s.Row = 8 then printfn ""
-  
 [<EntryPoint>]
 let main argv =
-  let board = Board.emptyBoard
-  let agent = State.CommandAgent(board)
-  agent.SendCommand (State.PostText "test")
-  printBoard agent.GetBoard
+  let board = BoardModule.emptyBoard
+//  let agent = State.CommandAgent(board)
+//  agent.SendCommand (State.PostText "test")
+  let square11 = board.Square 11
+  printfn "%A" square11
+//  printBoard agent.GetBoard
   
 //  printNotations board
 //  printIndicies board
