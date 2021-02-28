@@ -108,9 +108,21 @@ module Rules =
     From: Square
     To: Square
   }
+  let AddSquaresToEmptyBoard (squares:Square list) =
+    let output = Init.emptyBoard
+    for pieceToAdd in squares do
+      (output.Square pieceToAdd.Position).Piece <- pieceToAdd.Piece
+    output 
+  
+    
+    
+//  member this.Square x = Array.find(fun index -> index.Position = x) this.Squares
+  let SquareListToBoard (squares:Square list): Board =
+    let newArray = squares |> List.toArray
+    {Squares = newArray}
   let AllPosInRow (pos:Position): Position list = [ for x in [1..8] do ((getRow pos)*10+x)]
   let AllPosInCol (pos:Position): Position list = [ for x in [1..8] do ((getCol pos)+x*10)]
-  let GetAllSquaresInList (board:Board)(positions:Position list)  =
+  let GetAllSquaresInList (board:Board)(positions:Position list) =
     [ for pos in positions do
         board.Square pos ]
       

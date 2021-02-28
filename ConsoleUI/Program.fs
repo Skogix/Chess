@@ -55,10 +55,9 @@ let main argv =
 //  printfn "%A" (Rules.GetMoves board 21)
   printfn "%A" (Rules.AllPosInRow 45)
   printfn "%A" (Rules.AllPosInCol 45)
-  let huhu = (Rules.AllPosInCol 45)
-             |> List.append (Rules.AllPosInRow 45)
-             |> Rules.GetAllSquaresInList board
-  printfn "%A" huhu
+  let huhu = (Rules.AllPosInCol 45) |> List.append (Rules.AllPosInRow 45) |> Rules.GetAllSquaresInList board 
+  let newBoard = (Rules.AddSquaresToEmptyBoard huhu)
+  printBoard newBoard
 
   Console.ReadLine() |> ignore
   0 
