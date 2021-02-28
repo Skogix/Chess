@@ -28,16 +28,16 @@ let getGlyph (piece:Piece option) =
 //  for s in board do
 //    printf "%A " f
 //    if s.Row = 8 then printfn ""
-let printBoard board =
-  for s in board do
+let printBoard (board:Board.Board) =
+  for s in board.Squares do
     printf "%c" (getGlyph s.Piece)
     if s.Row = 8 then printfn ""
-let printIndicies (board:Square list) =
-  for s in board do
+let printIndicies (board:Board) =
+  for s in board.Squares do
     printf "%i " s.Index
     if s.Row = 8 then printfn ""
-let printNotations (board:Square list) =
-  for s in board do
+let printNotations (board:Board.Board) =
+  for s in board.Squares do
     printf "%s " s.Notation
     if s.Row = 8 then printfn ""
   
@@ -46,6 +46,8 @@ let main argv =
   let board = Board.emptyBoard
   let agent = State.CommandAgent(board)
   agent.SendCommand (State.PostText "test")
+  printBoard agent.GetBoard
+  
 //  printNotations board
 //  printIndicies board
 //  printBoard board

@@ -60,7 +60,9 @@ module Board =
     member this.Row = indexToRow this.Position
     member this.Index = this.Position
     member this.Notation = indexToNotation this.Position
-  type Board = Square list
+  type Board = {
+    Squares: Square list
+  }
   let getInitPiece (index:BoardIndex) =
     match (indexToRow index, indexToCol index) with
     | _, 2 -> Some { Color = Black; PieceType = Pawn }
@@ -82,33 +84,39 @@ module Board =
       | 5     -> Some {Color = White; PieceType = King}
       | _ -> failwith "inte en startpos"
     | _, _ -> None
-  let initSquares = [
+  let initBoard = {Squares = [
     for i in boardIndex do
       {
         Position = i
         Piece = getInitPiece i
       }
-  ]
-  let emptyBoard = [
+  ]}
+  let emptyBoard = {Squares = [
     for i in boardIndex do
       {
         Position = i
         Piece = None
       }
-  ]
+  ]}
 
 module State =
   type Command =
     | PostText of string
+    | GetBoard of AsyncReplyChannel<Board.Board>
   type CommandAgent (init:Board.Board) =
     let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
       let rec loop (oldBoard:Board.Board) = async {
         let! command = inbox.Receive()
-        printfn "%A" command
+        match command with
+        | PostText x -> printfn "%A" x
+        | GetBoard channel ->
+          channel.Reply oldBoard
+//        printfn "::: FrånCommandAgent: %A" command
         return! loop oldBoard
       }
       loop init
       )
     member this.x = 4
     member this.SendCommand cmd = mailbox.Post cmd
+    member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel)) 
     
