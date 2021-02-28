@@ -54,6 +54,10 @@ type Board = {
   Squares: Square list
 } with
   member this.Square x = this.Squares.[x]
+type Move = {
+  From: Position
+  To: Position
+}
 module BoardModule =
   let boardPositions: Position list = 
       [81..88] @
@@ -95,22 +99,27 @@ module BoardModule =
     {Squares = squares}
 module State =
   type Command =
-    | PostText of string
     | GetBoard of AsyncReplyChannel<Board>
+    | Move of Move
   type CommandAgent (init:Board) =
     let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
       let rec loop (oldBoard:Board) = async {
         let! command = inbox.Receive()
         match command with
-        | PostText x -> printfn "%A" x
         | GetBoard channel ->
           channel.Reply oldBoard
-//        printfn "::: FrånCommandAgent: %A" command
+        | Move move ->
+          let a = oldBoard.Square move.From
+          let b = oldBoard.Squares move.To
+          let oldSquares = oldBoard.Squares
+          let newSquares: Square list = {oldSquares with }
+          let newBoard: Board = { Squares = newSquares }
+          return! loop newBoard
         return! loop oldBoard
       }
       loop init
       )
-    member this.x = 4
     member this.SendCommand cmd = mailbox.Post cmd
+    member this.PostAndReply<'T> command = mailbox.PostAndReply<'T> (fun channel -> command(channel))
     member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel)) 
     
