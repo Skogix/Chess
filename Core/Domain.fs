@@ -60,6 +60,7 @@ module Board =
     member this.Row = indexToRow this.Position
     member this.Index = this.Position
     member this.Notation = indexToNotation this.Position
+    // todo; map istället?
   type Board = {
     Squares: Square list
   }
