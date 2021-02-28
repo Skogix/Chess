@@ -56,30 +56,25 @@ type Board = {
 } with
   member this.ToList = this.Squares |> Array.toList
   member this.Square x = Array.find(fun index -> index.Position = x) this.Squares
+  member this.Move x y =
+    (this.Square y).Piece <- (this.Square x).Piece
+    (this.Square x).Piece <- None
 module Init =
-  let getCol index = (index/10)%10
+  let getCol index = (index/1)%10
   let getRow index = (index/10)%10
   let positions: Position list = 
-    [11..18] @
-    [21..28] @
-    [31..38] @
-    [41..48] @
-    [51..58] @
-    [61..68] @
+    [81..88] @
     [71..78] @
-    [81..88]
+    [61..68] @
+    [51..58] @
+    [41..48] @
+    [31..38] @
+    [21..28] @
+    [11..18]
   let getInitPiece (pos:Position) =
-    match (getRow pos, getCol pos) with
+    match (getCol pos, getRow pos) with
     | _, 2 -> Some { Color = White; PieceType = Pawn }
     | _, 7 -> Some { Color = Black; PieceType = Pawn }
-    | x, 1 ->
-      match x with
-      | 1 | 8 -> Some {Color = White; PieceType = Rook}
-      | 2 | 7 -> Some {Color = White; PieceType = Knight}
-      | 3 | 6 -> Some {Color = White; PieceType = Bishop}
-      | 4     -> Some {Color = White; PieceType = Queen}
-      | 5     -> Some {Color = White; PieceType = King}
-      | _ -> failwith "inte en startpos"
     | x, 8 ->
       match x with
       | 1 | 8 -> Some {Color = Black; PieceType = Rook}
@@ -87,6 +82,14 @@ module Init =
       | 3 | 6 -> Some {Color = Black; PieceType = Bishop}
       | 4     -> Some {Color = Black; PieceType = Queen}
       | 5     -> Some {Color = Black; PieceType = King}
+      | _ -> failwith "inte en startpos"
+    | x, 1 ->
+      match x with
+      | 1 | 8 -> Some {Color = White; PieceType = Rook}
+      | 2 | 7 -> Some {Color = White; PieceType = Knight}
+      | 3 | 6 -> Some {Color = White; PieceType = Bishop}
+      | 4     -> Some {Color = White; PieceType = Queen}
+      | 5     -> Some {Color = White; PieceType = King}
       | _ -> failwith "inte en startpos"
     | _, _ -> None
   let initSquares =
@@ -99,3 +102,25 @@ module Init =
     Squares = initSquares
   }
   let emptyBoard: Board = {Squares = [|for pos in positions do {Position = pos; Piece = None}|]}
+module Rules =
+  type Move = {
+    Piece: Piece
+    From: Square
+    To: Square
+  }
+  let AllPosInRow (pos:Position): Position list = [ for x in [1..8] do ((getRow pos)*10+x)]
+  let AllPosInCol (pos:Position): Position list = [ for x in [1..8] do ((getCol pos)+x*10)]
+  let GetAllSquaresInList (board:Board)(positions:Position list)  =
+    [ for pos in positions do
+        board.Square pos ]
+      
+  
+  let Rook (pos:Position) (board:Board) =
+    0
+  let GetMoves (pos:Position) (board:Board)  =
+    match (board.Square pos).Piece with
+    | Some piece ->
+      match piece.PieceType with
+      | Rook -> [31]
+      | _ -> []
+    | None -> []
