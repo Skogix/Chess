@@ -1,8 +1,8 @@
 ﻿open System
 open System.Collections.Generic
+open System.ComponentModel
 open Chess
-open Chess.BoardModule
-open Chess.State
+
 
 let getGlyph (piece:Piece option) =
   match piece with
@@ -26,25 +26,20 @@ let getGlyph (piece:Piece option) =
       | Queen ->  '♛'
       | King ->   '♚'
 let printBoard (board:Board) =
-  for s in board.Squares do
-    printf "%c" (getGlyph s.Piece)
-    if s.Row = 8 then printfn ""
-let printPositions (board:Board) =
-  for s in board.Squares do
-    printf "%i " s.Position
-    if s.Row = 8 then printfn ""
+  for square in board.Squares do
+    Console.SetCursorPosition(square.Col, square.Row)
+    printf "%c" (getGlyph square.Piece)
+//    if square.Col % 8 = 0 then printfn ""
 let printNotation (board:Board) =
-  for s in board.Squares do
-    printf "%s " s.Notation
-    if s.Row = 8 then printfn ""
+  for square in board.Squares do
+    printf "%s " square.Notation
+    if square.Col % 8 = 0 then printfn ""
 [<EntryPoint>]
 let main argv =
-  let board = BoardModule.initBoard
-  let agent = State.CommandAgent(board)
-//  agent.SendCommand (State.PostText "test")
-  let huhu = agent.PostAndReply Command.GetBoard
-  printBoard huhu
-  printNotation huhu
-  printPositions huhu
+  let board = Init.initBoard
+  let emptyBoard = Init.emptyBoard
+//  printBoard board
+  printfn "%A" (board.Square 11)
+//  printNotation board
   Console.ReadLine() |> ignore
   0 

@@ -1,14 +1,12 @@
 module Chess
 
-open System
-module Helpers =
-  let getColFromPosition pos = (pos / 10) % 10
-  let getRowFromPosition pos = (pos / 1) % 10
-type Color = | White | Black
-type Row = int
+open System.Xml
+
+type Id = int
 type Col = int
+type Row = int
 type Position = int
-type Notation = string
+type Notation = string  
 type PieceType =
   | Pawn
   | Bishop
@@ -16,16 +14,19 @@ type PieceType =
   | Rook
   | Queen
   | King
+type Color = | White | Black
 type Piece = {
   Color: Color
   PieceType: PieceType
 }
+let getRow index = (index/10)%10
+let getCol index = (index/1)%10
 type Square = {
   Position: Position
-  Piece: Piece option
+  mutable Piece: Piece option
 } with
-  member this.Col = Helpers.getColFromPosition this.Position
-  member this.Row = Helpers.getRowFromPosition this.Position
+  member this.Col = getCol this.Position
+  member this.Row = getRow this.Position
   member this.Notation = 
     let col =
       match this.Col with
@@ -51,36 +52,27 @@ type Square = {
       | _ -> ' '
     (col.ToString() + row.ToString())
 type Board = {
-  Squares: Square list
+  Squares: Square array
 } with
-  member this.Square x = this.Squares.[x]
-type Move = {
-  From: Position
-  To: Position
-}
-module BoardModule =
-  let boardPositions: Position list = 
-      [81..88] @
-      [71..78] @
-      [61..68] @
-      [51..58] @
-      [41..48] @
-      [31..38] @
-      [21..28] @
-      [11..18]
+  member this.ToList = this.Squares |> Array.toList
+  member this.Square x = Array.find(fun index -> index.Position = x) this.Squares
+module Init =
+  let getCol index = (index/10)%10
+  let getRow index = (index/10)%10
+  let positions: Position list = 
+    [11..18] @
+    [21..28] @
+    [31..38] @
+    [41..48] @
+    [51..58] @
+    [61..68] @
+    [71..78] @
+    [81..88]
   let getInitPiece (pos:Position) =
-    match (Helpers.getRowFromPosition pos, Helpers.getColFromPosition pos) with
-    | _, 2 -> Some { Color = Black; PieceType = Pawn }
-    | _, 7 -> Some { Color = White; PieceType = Pawn }
+    match (getRow pos, getCol pos) with
+    | _, 2 -> Some { Color = White; PieceType = Pawn }
+    | _, 7 -> Some { Color = Black; PieceType = Pawn }
     | x, 1 ->
-      match x with
-      | 1 | 8 -> Some {Color = Black; PieceType = Rook}
-      | 2 | 7 -> Some {Color = Black; PieceType = Knight}
-      | 3 | 6 -> Some {Color = Black; PieceType = Bishop}
-      | 4     -> Some {Color = Black; PieceType = Queen}
-      | 5     -> Some {Color = Black; PieceType = King}
-      | _ -> failwith "inte en startpos"
-    | x, 8 ->
       match x with
       | 1 | 8 -> Some {Color = White; PieceType = Rook}
       | 2 | 7 -> Some {Color = White; PieceType = Knight}
@@ -88,38 +80,22 @@ module BoardModule =
       | 4     -> Some {Color = White; PieceType = Queen}
       | 5     -> Some {Color = White; PieceType = King}
       | _ -> failwith "inte en startpos"
+    | x, 8 ->
+      match x with
+      | 1 | 8 -> Some {Color = Black; PieceType = Rook}
+      | 2 | 7 -> Some {Color = Black; PieceType = Knight}
+      | 3 | 6 -> Some {Color = Black; PieceType = Bishop}
+      | 4     -> Some {Color = Black; PieceType = Queen}
+      | 5     -> Some {Color = Black; PieceType = King}
+      | _ -> failwith "inte en startpos"
     | _, _ -> None
-  let initBoard =
-    let squares = [for i in boardPositions do { Position = i
-                                                Piece = getInitPiece i }]
-    {Squares = squares}
-  let emptyBoard =
-    let squares = [for i in boardPositions do {Position = i
-                                               Piece = None}]
-    {Squares = squares}
-module State =
-  type Command =
-    | GetBoard of AsyncReplyChannel<Board>
-    | Move of Move
-  type CommandAgent (init:Board) =
-    let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
-      let rec loop (oldBoard:Board) = async {
-        let! command = inbox.Receive()
-        match command with
-        | GetBoard channel ->
-          channel.Reply oldBoard
-        | Move move ->
-          let a = oldBoard.Square move.From
-          let b = oldBoard.Squares move.To
-          let oldSquares = oldBoard.Squares
-          let newSquares: Square list = {oldSquares with }
-          let newBoard: Board = { Squares = newSquares }
-          return! loop newBoard
-        return! loop oldBoard
-      }
-      loop init
-      )
-    member this.SendCommand cmd = mailbox.Post cmd
-    member this.PostAndReply<'T> command = mailbox.PostAndReply<'T> (fun channel -> command(channel))
-    member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel)) 
-    
+  let initSquares =
+    [|
+      for pos in positions do
+        { Position = pos
+          Piece = getInitPiece pos }
+    |]
+  let initBoard: Board = {
+    Squares = initSquares
+  }
+  let emptyBoard: Board = {Squares = [|for pos in positions do {Position = pos; Piece = None}|]}
