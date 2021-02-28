@@ -1,9 +1,7 @@
-﻿// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
-
-open System
+﻿open System
+open System.Collections.Generic
 open Chess
-open BoardModule
-open State
+open Chess.Board
 
 let getGlyph (piece:Piece option) =
   match piece with
@@ -26,28 +24,30 @@ let getGlyph (piece:Piece option) =
       | Rook ->   '♜'
       | Queen ->  '♛'
       | King ->   '♚'
-let printState (state:State): unit =
-  Console.Clear()
-  for square in state.ChessBoard.Squares do
-    let x,y = square.Position
-    Console.SetCursorPosition(x,y)
-    printf "%c" (getGlyph square.Piece)
-    Console.SetCursorPosition(15, 1)
-    printf "%A" state.History.Head
-  Console.SetCursorPosition(1, 15)
-let rec gameLoop (agent:State.Agent) =
-  match Console.ReadKey(true).Key with
-    | ConsoleKey.N -> agent.SendCommand (LogText "command N")
-    | ConsoleKey.M -> agent.SendCommand (AddPiece (White, Rook))
-    | _ -> agent.SendCommand (LogText "hittade inte commandet")
-  gameLoop agent
+//let printBoard (board:Square list) f =
+//  for s in board do
+//    printf "%A " f
+//    if s.Row = 8 then printfn ""
+let printBoard board =
+  for s in board do
+    printf "%c" (getGlyph s.Piece)
+    if s.Row = 8 then printfn ""
+let printIndicies (board:Square list) =
+  for s in board do
+    printf "%i " s.Index
+    if s.Row = 8 then printfn ""
+let printNotations (board:Square list) =
+  for s in board do
+    printf "%s " s.Notation
+    if s.Row = 8 then printfn ""
+  
 [<EntryPoint>]
 let main argv =
-      
-  let agent = State.Agent()
-  agent.State printState
-  gameLoop agent
-//  agent.State printState
-//  agent.SendCommand (LogText "Uppdaterar state")
-  
-  0 // return an integer exit code
+  let board = Board.emptyBoard
+  let agent = State.CommandAgent(board)
+  agent.SendCommand (State.PostText "test")
+//  printNotations board
+//  printIndicies board
+//  printBoard board
+  Console.ReadLine() |> ignore
+  0 

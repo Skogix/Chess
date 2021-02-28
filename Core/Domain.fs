@@ -1,10 +1,10 @@
-﻿namespace Chess
+module Chess
 
-open System.Collections.Generic
+type Color = | White | Black
+type BoardIndex = int
 type Row = int
 type Col = int
-type Position = (Row * Col)
-type Color = | White | Black
+type Notation = string
 type PieceType =
   | Pawn
   | Bishop
@@ -12,102 +12,103 @@ type PieceType =
   | Rook
   | Queen
   | King
-type Command =
-  | LogText of string
-  | AddPiece of (Color * PieceType)
-  | PrintHistory
-  | GetHistory of AsyncReplyChannel<Command list>
 type Piece = {
   Color: Color
   PieceType: PieceType
 }
-type Square =
-  {
-    Position: (int * int)
+module Board =
+  let indexToCol i: Col = (i/10)%10
+  let indexToRow i: Row = (i/1)%10
+  let indexToNotation i: Notation = 
+      let col =
+        match indexToCol i with
+        | 1 -> 'A'
+        | 2 -> 'B'
+        | 3 -> 'C'
+        | 4 -> 'D'
+        | 5 -> 'E'
+        | 6 -> 'F'
+        | 7 -> 'G'
+        | 8 -> 'H'
+        | _ -> ' '
+      let row =
+        match indexToRow i with
+        | 1 -> '1'
+        | 2 -> '2'
+        | 3 -> '3'
+        | 4 -> '4'
+        | 5 -> '5'
+        | 6 -> '6'
+        | 7 -> '7'
+        | 8 -> '8'
+        | _ -> ' '
+      (col.ToString() + row.ToString())
+  let boardIndex: BoardIndex list = 
+      [81..88] @
+      [71..78] @
+      [61..68] @
+      [51..58] @
+      [41..48] @
+      [31..38] @
+      [21..28] @
+      [11..18]
+  type Square = {
+    Position: BoardIndex
     Piece: Piece option
-  }
-
-module Helpers =
-  let indexToCol i = ((i - 1) / 8) + 1
-  let indexToRow i = ((i - 1) % 8) + 1
-  let squareToIndex (row, col) = (8 * (row - 1) + (col - 1)) + 1
-  let indexToSquare i = (indexToRow i, indexToCol i)
-module BoardModule =
-  type BoardObject () =
-    let getInitPieces index =
-      match (Helpers.indexToRow index, Helpers.indexToCol index) with
-      | 2, _ -> Some { Color = White; PieceType = Pawn }
-      | 7, _ -> Some { Color = Black; PieceType = Pawn }
-      | 1, x ->
-        match x with
-        | 1 | 8 -> Some {Color = White; PieceType = Rook}
-        | 2 | 7 -> Some {Color = White; PieceType = Knight}
-        | 3 | 6 -> Some {Color = White; PieceType = Bishop}
-        | 4     -> Some {Color = White; PieceType = Queen}
-        | 5     -> Some {Color = White; PieceType = King}
-        | _ -> failwith "inte en startpos"
-      | 8, x ->
-        match x with
-        | 1 | 8 -> Some {Color = Black; PieceType = Rook}
-        | 2 | 7 -> Some {Color = Black; PieceType = Knight}
-        | 3 | 6 -> Some {Color = Black; PieceType = Bishop}
-        | 4     -> Some {Color = Black; PieceType = Queen}
-        | 5     -> Some {Color = Black; PieceType = King}
-        | _ -> failwith "inte en startpos"
-      | _, _ -> None
-    let squares = [
-                     for index in [1..64] do
-                       {
-                         Position = (Helpers.indexToCol index, Helpers.indexToRow index)
-                         Piece = getInitPieces index
-                       }
-                     ]
-    member this.Squares = squares
-    member this.Square x = squares.[x]
-  type State = {
-    History: Command list
-    ChessBoard: BoardObject
-  }
+  } with
+    member this.Column = indexToCol this.Position
+    member this.Row = indexToRow this.Position
+    member this.Index = this.Position
+    member this.Notation = indexToNotation this.Position
+  type Board = Square list
+  let getInitPiece (index:BoardIndex) =
+    match (indexToRow index, indexToCol index) with
+    | _, 2 -> Some { Color = Black; PieceType = Pawn }
+    | _, 7 -> Some { Color = White; PieceType = Pawn }
+    | x, 1 ->
+      match x with
+      | 1 | 8 -> Some {Color = Black; PieceType = Rook}
+      | 2 | 7 -> Some {Color = Black; PieceType = Knight}
+      | 3 | 6 -> Some {Color = Black; PieceType = Bishop}
+      | 4     -> Some {Color = Black; PieceType = Queen}
+      | 5     -> Some {Color = Black; PieceType = King}
+      | _ -> failwith "inte en startpos"
+    | x, 8 ->
+      match x with
+      | 1 | 8 -> Some {Color = White; PieceType = Rook}
+      | 2 | 7 -> Some {Color = White; PieceType = Knight}
+      | 3 | 6 -> Some {Color = White; PieceType = Bishop}
+      | 4     -> Some {Color = White; PieceType = Queen}
+      | 5     -> Some {Color = White; PieceType = King}
+      | _ -> failwith "inte en startpos"
+    | _, _ -> None
+  let initSquares = [
+    for i in boardIndex do
+      {
+        Position = i
+        Piece = getInitPiece i
+      }
+  ]
+  let emptyBoard = [
+    for i in boardIndex do
+      {
+        Position = i
+        Piece = None
+      }
+  ]
 
 module State =
-  open BoardModule
-  type Listener = State -> unit
-  module State =
-    type Agent() =
-      let stateListeners = List<Listener>()
-      let updateListeners (state:State) =
-        for listener in stateListeners do
-          listener state
-      let initState: State = { History = []
-                               ChessBoard = BoardObject() }
-      let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
-        let rec loop (oldState:State) = async {
-          let board = oldState.ChessBoard
-          let squares = board.Squares
-          let! command = inbox.Receive()
-          let newState =
-            match command with
-            | LogText msg ->
-              {oldState with History = command :: oldState.History}
-            | PrintHistory ->
-              printfn "%A" oldState
-              oldState
-            | GetHistory channel ->
-              channel.Reply(oldState.History)
-              oldState
-            | AddPiece (color, pieceType) ->
-              let newPiece = Some {Color = color; PieceType = pieceType}
-              let newPos: Position = (1,3)
-              let newSquare: Square = { Position = newPos
-                                        Piece = newPiece}
-              let newBoard: Board = {}
-              {oldState with ChessBoard = newBoard}
-          updateListeners newState
-          return! loop newState
-        }
-        loop initState
-        )
-      member this.SendCommand cmd = mailbox.Post cmd
-      member private this.PostAndReply channel = mailbox.PostAndReply channel
-      member this.GetHistory = mailbox.PostAndReply (fun replyChannel -> GetHistory(replyChannel))
-      member this.State f = stateListeners.Add f
+  type Command =
+    | PostText of string
+  type CommandAgent (init:Board.Board) =
+    let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
+      let rec loop (oldBoard:Board.Board) = async {
+        let! command = inbox.Receive()
+        printfn "%A" command
+        return! loop oldBoard
+      }
+      loop init
+      )
+    member this.x = 4
+    member this.SendCommand cmd = mailbox.Post cmd
+    

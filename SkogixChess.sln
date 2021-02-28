@@ -4,6 +4,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Core", "Core\Core.fsproj", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ConsoleUI", "ConsoleUI\ConsoleUI.fsproj", "{7F897333-4C82-44C9-98C0-46ED0E6D4CE4}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Scratch", "Scratch\Scratch.fsproj", "{7EA2261C-1565-4094-875F-FB566E30A71D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{7F897333-4C82-44C9-98C0-46ED0E6D4CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F897333-4C82-44C9-98C0-46ED0E6D4CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F897333-4C82-44C9-98C0-46ED0E6D4CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EA2261C-1565-4094-875F-FB566E30A71D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EA2261C-1565-4094-875F-FB566E30A71D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EA2261C-1565-4094-875F-FB566E30A71D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EA2261C-1565-4094-875F-FB566E30A71D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
