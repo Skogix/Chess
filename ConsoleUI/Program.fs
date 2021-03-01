@@ -1,6 +1,4 @@
 ﻿open System
-open System.Collections.Generic
-open System.ComponentModel
 open Chess
 
 
