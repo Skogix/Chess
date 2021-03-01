@@ -1,5 +1,6 @@
 ﻿// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
 
+open System.Data
 open Chess
 open Scratch.Extra
 type Move = {
@@ -31,7 +32,8 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
   let col = inputPos.Col
   let row = inputPos.Row
   let posInsideBoard col row = col <= 8 && col >= 1 && row <= 8 && row >= 1
-  let toPositions (list:(Col*Row) list) = [for (col,row) in list do {Col=col;Row=row}]
+  let filterInsideBoard = List.filter (fun (col:Col, row:Row) -> posInsideBoard col row)
+  let toPositions (list:(Col*Row) list) = [for (col,row) in (list |> filterInsideBoard) do {Col=col;Row=row}       ]
   let toSquares input = [for pos in input do board.Square(pos.Col, pos.Row)]
   let ifPiece (action:PieceAction) (list:Square list) =
     let isFriendly color = color <> inputPiece.Color
@@ -56,6 +58,8 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
       match inputPiece.Color, row with
       | White, 2 -> [(col,row+1); (col,row+2)] |> toPositions |> toSquares |> ifPiece Block
       | Black, 6 -> [(col,row-1); (col,row-2)] |> toPositions |> toSquares |> ifPiece Block
+      | White, _ -> [(col,row+1)] |> toPositions |> toSquares |> ifPiece Block
+      | Black, _ -> [(col,row-1)] |> toPositions |> toSquares |> ifPiece Block
       | _, _ -> []
     let captureMoves =
       match inputPiece.Color with
@@ -75,6 +79,25 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
           [for i in [1..min (distanceToEdge Down) (distanceToEdge Right)] do (col+i,row-i)] |> toPositions |> toSquares |> ifPiece CaptureOrBlock
         ] |> List.concat
     toEdge 
+  let kingMoves =
+    let runCheck input =
+      input
+      |> List.filter (fun (col:Col, row:Row) -> posInsideBoard col row)
+      |> toPositions
+      |> toSquares
+      |> ifPiece CaptureOrBlock
+    let around =
+      [
+        [(col+1,row+1)] |> runCheck
+        [(col+1,row)]   |> runCheck
+        [(col+1,row-1)] |> runCheck
+        [(col-1,row+1)] |> runCheck
+        [(col-1,row)]   |> runCheck
+        [(col-1,row-1)] |> runCheck
+        [(col,row+1)]   |> runCheck
+        [(col,row-1)]   |> runCheck
+      ] |> List.concat
+    around
   let straightMoves =
     let toEdge =
         [
@@ -109,11 +132,10 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
     | None -> []
     | Some p ->
       match p.PieceType with
-//      | Queen -> straightMoves @ diagonalMoves 
-//      | Rook -> straightMoves 
+      | Queen -> straightMoves @ diagonalMoves 
       | Bishop -> diagonalMoves 
       | Knight -> knightMoves 
-//      | King -> kingMoves 
+      | King -> kingMoves 
       | Rook -> straightMoves
       | Pawn -> pawnMoves
       | _ -> []
@@ -121,14 +143,25 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
 [<EntryPoint>]
 let main argv =
   let testBoard = Init.emptyBoard
-  testBoard.AddPiece Black Knight (3,2)
-  testBoard.AddPiece White Knight (5,3)
-  testBoard.AddPiece Black Bishop (8,7)
-  testBoard.AddPiece Black Pawn (2,4)
-  testBoard.AddPiece Black Pawn (3,3)
-  testBoard.AddPiece Black Pawn (5,6)
-  testBoard.AddPiece White Pawn (6,4)
-  let testSquare = testBoard.Square (3,2)
+  let     a = 5
+  let     b = 1
+  let piece = Pawn
+  let color = White
+  testBoard.AddPiece color piece (a, b)
+  testBoard.AddPiece Black Knight (4,2)
+  testBoard.AddPiece White Queen (6,2)
+  testBoard.AddPiece White Bishop (1,2)
+  let testSquare = testBoard.Square (a, b)
+  printfn "%A" (getSquareMoves testSquare testBoard)
   testBoard.HighlightedSquares <- getSquareMoves testSquare testBoard
+  let printAllSquaresAttacking testBoard =
+    let huhu =
+      [for square in testBoard.Squares do
+         if square.HasPiece then yield getSquareMoves square testBoard
+         ]
+    let highlight =
+      huhu |> List.concat
+    testBoard.HighlightedSquares <- highlight
   printBoard testBoard
+  
   0 // return an integer exit code
