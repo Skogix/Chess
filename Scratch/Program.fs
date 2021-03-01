@@ -10,20 +10,16 @@ module Rules =
     To: Square
   }
 let posToCollision (square:Square) (board:Board) =
-  let startingCol = square.Col
-  let startingRow = square.Row
-  let hasPiece (square:Square) = square.Piece.IsSome
+  let pos = square.Position
   let isEnemyPiece (piece:Piece) = piece.Color <> square.Piece.Value.Color
-  let getPosUp: Square list =
-    [
-      for row in [startingRow%10+1..8] do
-        board.Square(startingCol, row)
-    ]
-  let getPosRight: Square list =
-    [
-      for col in [startingCol%10+1..8] do
-        board.Square(col, startingRow)
-    ]
+  let up =    [pos.Row%10+1 .. 8]
+  let right = [pos.Col%10+1 .. 8]
+  let down =  [1 .. pos.Row%10-1]
+  let left =  [1 .. pos.Col%10-1]
+  let getPosUp = [ for row in up do board.Square(square.Col, row) ]
+  let getPosDown = [ for row in down do board.Square(square.Col, row) ]
+  let getPosRight = [ for col in right do board.Square(col, square.Row) ]
+  let getPosLeft = [ for col in left do board.Square(col, square.Row) ]
   let rec loop (rest:Square list) (out:Square list)  =
     match rest with
     | [] -> out
@@ -34,11 +30,8 @@ let posToCollision (square:Square) (board:Board) =
         | true -> (x::out)
         | false -> out
       | None -> loop rest (x::out)
-//      if (hasPiece x) then out
-//      else loop rest (x::out) 
-//  loop getPosUp []
-  loop getPosRight [] @ loop getPosUp []
-    
+  let straightMoves = loop getPosRight [] @ loop getPosLeft [] @ loop getPosDown [] @ loop getPosUp []
+  straightMoves
 [<EntryPoint>]
 let main argv =
   let testBoard = Init.emptyBoard
