@@ -4,7 +4,6 @@ open System
 open System.Drawing
 open System.Drawing
 
-type Id = int
 type Col = int
 type Row = int
 type Position = {Col:Col;Row:Row} with
@@ -57,14 +56,11 @@ type Square = {
     (col.ToString() + row.ToString())
 type Board = {
   Squares: Square array
-  mutable HighlightedSquares: Position list
+  mutable HighlightedSquares: Square list
 } with
   member this.ToList = this.Squares |> Array.toList
   member this.Square (col:Col, row:Row) = Array.find(fun index -> index.Position = {Row=row;Col=col}) this.Squares
   member this.Square (pos:Position) = Array.find(fun index -> index.Position = pos) this.Squares
-//  member this.Move x y =
-//    (this.Square y).Piece <- (this.Square x).Piece
-//    (this.Square x).Piece <- None
 module Init =
   let getCol index = (index/1)%10
   let getRow index = (index/10)%10
