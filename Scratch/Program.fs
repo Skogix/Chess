@@ -2,29 +2,42 @@
 
 open System.Data
 open Chess
+open Chess
 open Scratch.Extra
+module State =
+  type Command =
+    | GetBoard of AsyncReplyChannel<Board>
+    | SendMessage of string
+    | AddPiece of AsyncReplyChannel<Board> * Piece
+  type State = {
+    Board: Board
+    History: Command list
+  }
+  type Agent(board:Board) =
+    let mailbox = MailboxProcessor<Command>.Start(fun inbox ->
+      let rec loop (state:State) = async {
+        let! command = inbox.Receive()
+        let board = state.Board
+        match command with
+        | SendMessage msg ->
+          let newHistory = {state with History = command::state.History}
+          return! loop state
+        | GetBoard rc ->
+          rc.Reply state.Board
+          return! loop state
+        | AddPiece (rc, piece) ->
+          0
+        return! loop state
+      }
+      loop {State.Board = board; State.History = []})
+    member this.SendMessage msg = mailbox.Post (Command.SendMessage(msg))
+    member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel))
 [<EntryPoint>]
 let main argv =
-  let testBoard = Init.emptyBoard
-  let     a = 5
-  let     b = 1
-  let piece = Pawn
-  let color = White
-  testBoard.AddPiece color piece (a, b)
-  testBoard.AddPiece Black Knight (4,2)
-  testBoard.AddPiece White Queen (6,2)
-  testBoard.AddPiece White Bishop (1,2)
-  let testSquare = testBoard.Square (a, b)
-  printfn "%A" (getSquareMoves testSquare testBoard)
-  testBoard.HighlightedSquares <- getSquareMoves testSquare testBoard
-  let printAllSquaresAttacking testBoard =
-    let huhu =
-      [for square in testBoard.Squares do
-         if square.HasPiece then yield getSquareMoves square testBoard
-         ]
-    let highlight =
-      huhu |> List.concat
-    testBoard.HighlightedSquares <- highlight
-  printBoard testBoard
+  let agent = State.Agent(Init.emptyBoard)
+  agent.SendMessage "Testar"
+  let state1 = agent.GetBoard
+  printBoard state1
+  
   
   0 // return an integer exit code
