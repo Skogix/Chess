@@ -3,6 +3,7 @@ module Chess
 open System
 open System.Drawing
 open System.Drawing
+open System.Net.Mime
 
 type Col = int
 type Row = int
@@ -63,6 +64,7 @@ type Board = {
   member this.Square (pos:Position) = Array.find(fun index -> index.Position = pos) this.Squares
   member this.AddPiece (color:Color) (pieceType:PieceType) (col, row) =
     this.Square(col,row).Piece <- Some {Color = color; PieceType = pieceType}
+  member this.GetSquares (positions:Position list) = [for pos in positions do this.Square pos]
 module Init =
   let getCol index = (index/1)%10
   let getRow index = (index/10)%10
