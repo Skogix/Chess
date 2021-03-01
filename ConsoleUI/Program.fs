@@ -34,15 +34,15 @@ let printBoard (board:Board) =
 //    Console.SetCursorPosition(square.Col, square.Row)
     if (PosExistsInList square.Position board.HighlightedSquares) then Console.BackgroundColor <- ConsoleColor.Gray
     printf "%c" (getGlyph square.Piece); Console.BackgroundColor <- ConsoleColor.DarkGray
-    if square.Col % 8 = 0 then printfn ""
+    if square.Row % 8 = 0 then printfn ""
 let printNotation (board:Board) =
   for square in board.Squares do
     printf "%s " square.Notation
-    if square.Col % 8 = 0 then printfn ""
+    if square.Row % 8 = 0 then printfn ""
 let printPosition (board:Board) =
   for square in board.Squares do
     printf "%A " square.Position
-    if square.Col % 8 = 0 then printfn ""
+    if square.Row % 8 = 0 then printfn ""
 [<EntryPoint>]
 let main argv =
   let board = Init.initBoard
@@ -67,14 +67,16 @@ let main argv =
 //  printBoard newBoard
 //  printfn "%A" newBoard.HighlightedSquares
 //  printBoard boardWithOnlyAddedSquares
-  (emptyBoard.Square 14).Piece <- Some { Color = White
-                                         PieceType = Rook }
-  (emptyBoard.Square 16).Piece <- Some { Color = Black
-                                         PieceType = Pawn }
-  let allRow = (Rules.AllPosInRow 14 emptyBoard) 
-  emptyBoard.HighlightedSquares <- allRow
-  printBoard emptyBoard
-  printfn "%A" allRow
+//  let checkPos = createPos (4,2)
+//  (emptyBoard.Square (4,2)).Piece <- Some { Color = White
+//                                            PieceType = Rook }
+//  (emptyBoard.Square (4,6)).Piece <- Some { Color = Black
+//                                            PieceType = Pawn }
+//  let positionsToHighLight = Rules.GetValidMoves checkPos emptyBoard
+//  emptyBoard.HighlightedSquares <- positionsToHighLight
+//  printBoard emptyBoard
+//  printfn "%A" positionsToHighLight
+//  printfn "%A" allRow
 //  let allMoves = (Rules.GetMoves 11 emptyBoard)
 //  let los = (Rules.LineOfSight 11 allMoves)
 //  emptyBoard.HighlightedSquares <- los

@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Extra.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
