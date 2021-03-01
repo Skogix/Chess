@@ -22,14 +22,14 @@ let getGlyph (piece:Piece option) =
       | Rook ->   '♜'
       | Queen ->  '♛'
       | King ->   '♚'
-let PosExistsInList (pos:Position) (highlighted:Position list): bool =
+let SquareIsHighlighted (square:Square) (highlighted:Square list): bool =
   highlighted
-  |> List.contains pos
+  |> List.contains square
 let printBoard (board:Board) =
   Console.BackgroundColor <- ConsoleColor.DarkGray
   for square in board.Squares do
 //    Console.SetCursorPosition(square.Col, square.Row)
-    if (PosExistsInList square.Position board.HighlightedSquares) then Console.BackgroundColor <- ConsoleColor.Gray
+    if (SquareIsHighlighted square board.HighlightedSquares) then Console.BackgroundColor <- ConsoleColor.Gray
     printf "%c" (getGlyph square.Piece); Console.BackgroundColor <- ConsoleColor.DarkGray
     if square.Col % 8 = 0 then printfn ""
 let printNotation (board:Board) =

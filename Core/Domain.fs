@@ -61,6 +61,8 @@ type Board = {
   member this.ToList = this.Squares |> Array.toList
   member this.Square (col:Col, row:Row) = Array.find(fun index -> index.Position = {Row=row;Col=col}) this.Squares
   member this.Square (pos:Position) = Array.find(fun index -> index.Position = pos) this.Squares
+  member this.AddPiece (color:Color) (pieceType:PieceType) (col, row) =
+    this.Square(col,row).Piece <- Some {Color = color; PieceType = pieceType}
 module Init =
   let getCol index = (index/1)%10
   let getRow index = (index/10)%10
