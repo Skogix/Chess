@@ -65,6 +65,11 @@ type Board = {
   member this.AddPiece (color:Color) (pieceType:PieceType) (col, row) =
     this.Square(col,row).Piece <- Some {Color = color; PieceType = pieceType}
   member this.GetSquares (positions:Position list) = [for pos in positions do this.Square pos]
+type MoveType =
+  | Straight
+  | Diagonal
+  | Horse
+type Direction = | Up | Down | Left | Right
 module Init =
   let getCol index = (index/1)%10
   let getRow index = (index/10)%10
@@ -109,3 +114,72 @@ module Init =
     HighlightedSquares = [] }
   let emptyBoard: Board = { Squares = [|for pos in positions do {Position = pos; Piece = None}|]
                             HighlightedSquares = [] }
+let posToCollision (inputSquare:Square) (board:Board) =
+  let pos = inputSquare.Position
+  let isEnemyPiece piece = piece.Color <> inputSquare.Piece.Value.Color
+  let distance (dir:Direction) =
+    match dir with
+    | Up -> abs (pos.Row - 8)
+    | Down -> pos.Row - 1
+    | Left -> pos.Col - 1
+    | Right -> abs (pos.Col - 8)
+  let straightMoves =
+    [
+      [for i in [1 .. distance Up]    do {Col=pos.Col;Row=pos.Row+i}]
+      [for i in [1 .. distance Down]  do {Col=pos.Col;Row=pos.Row-i}]
+      [for i in [1 .. distance Left]  do {Col=pos.Col-i;Row=pos.Row}]
+      [for i in [1 .. distance Right] do {Col=pos.Col+i;Row=pos.Row}]
+    ] |> List.map board.GetSquares
+  let diagonalMoves =
+    [
+     [for i in [1..(min (distance Up) (distance Right))]   do {Col=pos.Col+i;Row=pos.Row+i}]
+     [for i in [1..(min (distance Up) (distance Left))]    do {Col=pos.Col-i;Row=pos.Row+i}]
+     [for i in [1..(min (distance Down) (distance Right))] do {Col=pos.Col+i;Row=pos.Row-i}]
+     [for i in [1..(min (distance Down) (distance Left))]  do {Col=pos.Col-i;Row=pos.Row-i}]
+    ] |> List.map board.GetSquares
+  let horseMoves =
+    let checkPos col row = col <= 8 && col >= 1 && row <= 8 && row >= 1
+    let posList =
+        let row = pos.Row
+        let col = pos.Col
+        [
+          (col-1,row+2);(col+1,row+2) // up
+          (col-1,row-2);(col+1,row-2) // down
+          (col-2,row-1);(col-2,row+1) // left
+          (col+2,row-1);(col+2,row+1) // left
+//          {Col=pos.Col-1;Row=pos.Row+2};{Col=pos.Col+1;Row=pos.Row+2} // up
+//          {Col=pos.Col-1;Row=pos.Row-2};{Col=pos.Col+1;Row=pos.Row-2} // down
+//          {Col=pos.Col+2;Row=pos.Row+1};{Col=pos.Col+2;Row=pos.Row-1} // right
+//          {Col=pos.Col-2;Row=pos.Row+1};{Col=pos.Col-2;Row=pos.Row+1} // left
+        ] 
+    [
+      for col, row in posList do
+        printfn "%A %A" col row
+        if (checkPos col row) then [createPos(col, row)]
+        else []
+    ] |> List.map board.GetSquares
+  let rec loop (rest:Square list) (out:Square list): Square list =
+    match rest with
+    | [] -> out
+    | square::rest ->
+      match square.Col, square.Row with
+      | _ ->
+        match square.Piece with
+        | Some p ->
+          match isEnemyPiece p with
+          | true -> (square::out)
+          | false -> out
+        | None -> loop rest (square::out)
+  let getMoves (move:MoveType): Square list =
+    match move with
+      | Straight -> straightMoves |> List.map (fun move -> loop move []) |> List.concat
+      | Diagonal -> diagonalMoves |> List.map (fun move -> loop move []) |> List.concat
+      | Horse -> horseMoves |> List.map (fun move -> loop move []) |> List.concat
+      
+  // todo: getmoves beroende på piecetype
+  match inputSquare.Piece.Value.PieceType with
+  | Queen -> getMoves Straight @ getMoves Diagonal
+  | Rook -> getMoves Straight
+  | Bishop -> getMoves Diagonal
+  | Knight -> getMoves Horse
+  | _ -> List.empty
