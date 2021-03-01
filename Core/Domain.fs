@@ -123,19 +123,72 @@ module Rules =
     let newArray = squares |> List.toArray
     { Squares = newArray
       HighlightedSquares = [] }
-  let AllPosInRow (pos:Position): Position list = [ for x in [1..8] do ((getRow pos)*10+x)]
+  let AllPosInRow pos (board:Board): Position list =
+    let checkA = (List.rev [1..(pos%10-1)])
+    let checkB = (List.rev [(pos%10+1)..8])
+    printfn "CheckA: %A" checkA
+    printfn "CheckB: %A" checkB
+//    let isPiece row: Piece option = (board.Square (row+10)).Piece
+    let rec loop (initList:Position list) (output:Position list): Position list =
+      match initList with
+      | [] ->
+        printfn "Done"
+        output
+      | x::rest ->
+        // är for pos%10 + 1 plus ettan:w
+        
+        if (board.Square (pos%10)).Piece.IsSome then printfn "HUHU"
+        printfn "%A" x
+        loop rest (x::output)
+    loop checkA [] @ loop checkB []
+      
+//      // restpos + 10 overflow kolla alternativ
+//      let isPiece = (board.Square (getRow restPos.Head)).Piece.IsSome
+//      match restPos, isPiece with
+//      | [], _ -> output
+//      | x::rest, false ->
+//        printfn "OK: %A" x
+//        (loop rest (x::output))
+//      | x::rest, true ->
+//        printfn "FAIL: %A" x
+//        printfn "OUTPUT med fail: %A" output
+//        x::output
+//      | _, _ ->
+//        printfn "ska inte hit"
+//        output
+//    let right = (loop checkB [])
+//    printfn "%A" right
+//    let left = (loop checkA [])
+//    printfn "%A" left
+//    right @ left
+//      
+//    
+//    [
+//      for x in checkA do
+//        printfn "Kollar %i" x
+//        if ((isPiece x).IsSome) then printfn "Huhuhu"
+//        ((getRow pos)*10+x)
+//    ]
+//    @
+//    [
+//     for y in checkB do
+//       printfn "Kollar %i" y
+//       if ((isPiece y).IsSome) then ()
+//       else ((getRow pos)*10+y)
+//    ]
   let AllPosInCol (pos:Position): Position list = [ for x in [1..8] do ((getCol pos)+x*10)]
   let GetAllSquaresInList (board:Board)(positions:Position list) =
     [ for pos in positions do
         board.Square pos ]
-      
+  let LineOfSight (piecePos:Position) (possiblePos:Position list): Position list =
+    possiblePos
   
-  let Rook (pos:Position) (board:Board) =
-    0
-  let GetMoves (pos:Position) (board:Board)  =
+  let RookMove (pos:Position) (board:Board): Position list =
+    (AllPosInRow pos board) @ (AllPosInCol pos)
+  let GetMoves (pos:Position) (board:Board): Position list =
     match (board.Square pos).Piece with
     | Some piece ->
       match piece.PieceType with
-      | Rook -> [31]
+      | Rook -> (RookMove pos board)
       | _ -> []
     | None -> []

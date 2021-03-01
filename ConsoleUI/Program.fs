@@ -67,8 +67,21 @@ let main argv =
 //  printBoard newBoard
 //  printfn "%A" newBoard.HighlightedSquares
 //  printBoard boardWithOnlyAddedSquares
+  (emptyBoard.Square 14).Piece <- Some { Color = White
+                                         PieceType = Rook }
+  (emptyBoard.Square 16).Piece <- Some { Color = Black
+                                         PieceType = Pawn }
+  let allRow = (Rules.AllPosInRow 14 emptyBoard) 
+  emptyBoard.HighlightedSquares <- allRow
+  printBoard emptyBoard
+  printfn "%A" allRow
+//  let allMoves = (Rules.GetMoves 11 emptyBoard)
+//  let los = (Rules.LineOfSight 11 allMoves)
+//  emptyBoard.HighlightedSquares <- los
+  
+//  printBoard emptyBoard
+  
+//  printfn "%A" (List.rev [1..10])
 
-  let highlighted11 = (Rules.AllPosInCol 11) |> List.append (Rules.AllPosInRow 11)
-  board.HighlightedSquares <- highlighted11
   Console.ReadLine() |> ignore
   0 
