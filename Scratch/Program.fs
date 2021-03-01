@@ -83,10 +83,26 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
           [for i in [1..distanceToEdge Right] do (col+i,row)] |> toPositions |> toSquares |> ifPiece CaptureOrBlock
           [for i in [1..distanceToEdge Left] do (col-i,row)] |> toPositions |> toSquares |> ifPiece CaptureOrBlock
         ] |> List.concat
-    toEdge 
-    
-    
-    
+    toEdge
+  let knightMoves =
+    let runCheck x =
+      x
+      |> List.filter (fun (col:Col, row:Row) -> posInsideBoard col row)
+      |> toPositions
+      |> toSquares
+      |> ifPiece CaptureOrBlock
+    let posList =
+      [ // todo; kolla varfor inte iter / map funkar som jag tror
+        [(col-1,row+2)] |> runCheck
+        [(col+1,row+2)] |> runCheck
+        [(col-1,row-2)] |> runCheck
+        [(col+1,row-2)] |> runCheck
+        [(col-2,row-1)] |> runCheck
+        [(col-2,row+1)] |> runCheck
+        [(col+2,row-1)] |> runCheck
+        [(col+2,row+1)] |> runCheck
+      ] |> List.concat
+    posList
     
   let output =
     match inputSquare.Piece with
@@ -96,7 +112,7 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
 //      | Queen -> straightMoves @ diagonalMoves 
 //      | Rook -> straightMoves 
       | Bishop -> diagonalMoves 
-//      | Knight -> horseMoves 
+      | Knight -> knightMoves 
 //      | King -> kingMoves 
       | Rook -> straightMoves
       | Pawn -> pawnMoves
@@ -105,14 +121,14 @@ let getSquareMoves (inputSquare:Square) (board:Board) =
 [<EntryPoint>]
 let main argv =
   let testBoard = Init.emptyBoard
-  testBoard.AddPiece Black Bishop (3,2)
-  testBoard.AddPiece White Pawn (4,2)
+  testBoard.AddPiece Black Knight (3,2)
+  testBoard.AddPiece White Knight (5,3)
   testBoard.AddPiece Black Bishop (8,7)
-  testBoard.AddPiece Black Pawn (2,6)
+  testBoard.AddPiece Black Pawn (2,4)
   testBoard.AddPiece Black Pawn (3,3)
   testBoard.AddPiece Black Pawn (5,6)
-  testBoard.AddPiece White Pawn (5,3)
-  let testSquare = testBoard.Square (4,2)
+  testBoard.AddPiece White Pawn (6,4)
+  let testSquare = testBoard.Square (3,2)
   testBoard.HighlightedSquares <- getSquareMoves testSquare testBoard
   printBoard testBoard
   0 // return an integer exit code
