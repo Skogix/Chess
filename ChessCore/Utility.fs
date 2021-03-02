@@ -10,7 +10,6 @@ let squareIds =
     [21..28] @
     [11..18]
   ] |> List.concat
-printfn "%A" squareIds
 let notation id =
   let file =
     match (id/1) % 10 with

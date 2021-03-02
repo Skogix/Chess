@@ -28,7 +28,7 @@ let main argv =
   let board = Board.createBoard fen
 //  printfn "%A" board
 //  Board.Notation 11 |> print
-  printBoard board
+//  printBoard board
   Console.ReadKey() |> ignore
   0
   

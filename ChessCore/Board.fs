@@ -34,46 +34,9 @@ type Board = {
   FullMove: MoveCounter
 } with
   static member Notation id = Utility.notation id
-let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1".Split ' '
+let skogixNotation = "rnbqkbnr/pppppppp/......../......../......../......../PPPPPPPP/RNBQKBNR w KQkq - 0 1".Split ' '
 let createBoard (input:string) =
-  let fen = input.Split ' '
-  let Pieces = fen.[0] |> Seq.toList
-  let SideToMove =
-    match fen.[1] with
-    | "w" -> White
-    | "b" -> Black
-    | _ -> failwith "fenfel"
-  let CastleRights =
-    [for char in fen.[2].ToCharArray() do
-      match char with
-      | 'k' -> BlackKingSide
-      | 'q' -> BlackQueenSide
-      | 'K' -> WhiteKingSide
-      | 'Q' -> WhiteQueenSide
-      | _ -> failwith "fenfel" ]
-  let HalfMove = fen.[4]
-  let FullMove = fen.[5]
-  
-  let squares =
-    let charToPiece (c:char) (color:Color) =
-      match Char.ToLower c with
-      | 'p' -> Pawn color
-      | 'r' -> Rook color
-      | 'n' -> Knight color
-      | 'b' -> Bishop color
-      | 'q' -> Queen color
-      | 'k' -> King color
-      | _ -> failwith "fenfail"
-    let empty x = [ for _ in 1..x do None ]
-    [for char in Pieces do
-       match char with
-       | '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8' -> empty (char |> Char.GetNumericValue |> int)
-       | 'p'|'r'|'n'|'b'|'q'|'k' -> [charToPiece char Black]
-       | 'P'|'R'|'N'|'B'|'Q'|'K' -> [charToPiece char White]
-       | _ -> ()
-    ] |> List.concat |> List.zip Utility.squareIds |> List.map (fun (x, y) -> {Id = x; Content = y})
-  let EnPassant = fen.[3]
-  squares
+  0
 //  {
 //    Squares = squares
 //    SideToMove = SideToMove
