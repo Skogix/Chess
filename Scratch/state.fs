@@ -1,6 +1,7 @@
 module Scratch.state
 
 open ChessCore
+open ChessCore.Domain
 
 module State =
   type Command =

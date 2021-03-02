@@ -16,10 +16,10 @@ type Col = int
 type Row = int
 type Position = {Col:Col;Row:Row} with
   static member Create col row = {Col=col;Row=row}
-let createPos (col:Col, row:Row) = {Col = col; Row = row}
-let createPosFromList (input:(int*int) list) = [for (x,y) in input do {Col = x;Row = y}]
-let createPosFromCols (cols:Col list, row:Row) = [for col in cols do {Row = row; Col = col}]
-let createPosFromRows (col:Col, rows:Row list) = [for row in rows do {Row = row; Col = col}]
+type Positions = {Positions: Position list} with
+  static member Map list = [for (x,y) in list do {Col = x; Row = y}]
+  static member ZipCols (cols:Col list, row:Row) = [for col in cols do {Row = row; Col = col}]
+  static member ZipRows (col:Col, rows:Row list) = [for row in rows do {Row = row; Col = col}]
 type Notation = string  
 type PieceType =
   | Pawn
@@ -42,7 +42,7 @@ type Square = {
   member this.Notation = Utility.notation this.Col this.Row
 type Board = {
   Squares: Square array
-  mutable HighlightedSquares: Square list
+  HighlightedSquares: Square list
 } with
   member this.ToList = this.Squares |> Array.toList
   member this.Square (col, row) = Array.find(fun index -> index.Position = {Row=row;Col=col}) this.Squares
