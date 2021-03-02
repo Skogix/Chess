@@ -1,12 +1,15 @@
-module ChessCore.Moves
+module ChessCore.Pieces
+
 open ChessCore.Domain
+
+module Shared =
+  0
 module Moves =
   type Move = {
     Piece: Piece
     From: Square
     To: Square
   }
-  type Direction = | Up | Down | Left | Right
   let getSquareMoves (inputSquare:Square) (board:Board) =
     let inputPos = inputSquare.Position
     let distanceToEdge (dir:Direction) =

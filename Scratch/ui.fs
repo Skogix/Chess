@@ -1,5 +1,6 @@
 module Scratch.ui
 open ChessCore
+open ChessCore.Domain
 let getGlyph (piece:Piece option) =
   match piece with
   | None -> '.'

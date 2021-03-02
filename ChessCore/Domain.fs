@@ -1,4 +1,5 @@
 module ChessCore.Domain
+type Direction = | Up | Down | Left | Right
 type PieceAction =
   | Block
   | Capture
@@ -38,32 +39,7 @@ type Square = {
 } with
   member this.Col = this.Position.Col
   member this.Row = this.Position.Row
-  member this.HasPiece = this.Piece.IsSome
-  member this.IsEmpty = this.Piece.IsNone
-  member this.Notation = 
-    let col =
-      match this.Col with
-      | 1 -> 'A'
-      | 2 -> 'B'
-      | 3 -> 'C'
-      | 4 -> 'D'
-      | 5 -> 'E'
-      | 6 -> 'F'
-      | 7 -> 'G'
-      | 8 -> 'H'
-      | _ -> ' '
-    let row =
-      match this.Row with
-      | 1 -> '1'
-      | 2 -> '2'
-      | 3 -> '3'
-      | 4 -> '4'
-      | 5 -> '5'
-      | 6 -> '6'
-      | 7 -> '7'
-      | 8 -> '8'
-      | _ -> ' '
-    (col.ToString() + row.ToString())
+  member this.Notation = Utility.notation this.Col this.Row
 type Board = {
   Squares: Square array
   mutable HighlightedSquares: Square list
