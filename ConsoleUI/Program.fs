@@ -82,7 +82,7 @@ let main argv =
 //  printBoard emptyBoard
   
 //  printfn "%A" (List.rev [1..10])
-
+//backup
   Console.ReadLine() |> ignore
   0
   /// KUKJÄVLAR allt dog,
