@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="Domain.fs" />
-      <Compile Include="Backup.fs" />
+        <Compile Include="Library.fs" />
+        <None Include="state.fsx" />
     </ItemGroup>
 
 </Project>

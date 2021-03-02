@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Init.fs" />
+        <Compile Include="Domain.fs" />
+        <Compile Include="Library.fs" />
+        <Compile Include="Moves.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Private.Xml, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+        <HintPath>..\..\..\..\..\usr\share\rider\lib\ReSharperHost\linux-x64\dotnet\shared\Microsoft.NETCore.App\3.1.8\System.Private.Xml.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

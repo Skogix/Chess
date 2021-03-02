@@ -6,12 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Extra.fs" />
-        <Compile Include="Backup.fs" />
+        <Compile Include="state.fs" />
+        <Compile Include="ui.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ChessCore\ChessCore.fsproj" />
       <ProjectReference Include="..\Core\Core.fsproj" />
     </ItemGroup>
 
