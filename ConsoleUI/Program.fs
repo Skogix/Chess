@@ -84,4 +84,11 @@ let main argv =
 //  printfn "%A" (List.rev [1..10])
 
   Console.ReadLine() |> ignore
-  0 
+  0
+  /// KUKJÄVLAR allt dog,
+  ///
+  /// todo imorgon, gor allt stateless, fixa git,
+  /// en gameagent och en generic stateagent, planera
+  /// allmän ui/io-struktur
+  /// test
+  /// master
