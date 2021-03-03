@@ -2,6 +2,7 @@
 open ChessCore
 open ChessCore.Board
 open ChessCore.Domain
+open ChessCore.Pieces
 let printBoard (board:Board) (highlights:Id list) =
   let isHighlighted (id:Id) = highlights |> List.contains id
   let getGlyph = function
@@ -41,24 +42,9 @@ let print x = printfn "%A" x
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
-  let move0 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" 
-  let move1 = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" 
-  let move2 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2" 
-  let move3 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
-  let board0 = createBoard move0
-  let board1 = createBoard move1
-  let board2 = createBoard move2
-  let board3 = createBoard move3
-  move0 |> printfn "%s"
-  board0 |> createFen |> printfn "%s"
-  move1 |> printfn "%s"
-  board1 |> createFen |> printfn "%s"
-  move2 |> printfn "%s"
-  board2 |> createFen |> printfn "%s"
-  move3 |> printfn "%s"
-  board3 |> createFen |> printfn "%s"
-  
-  
-  Console.ReadKey() |> ignore
+  let emptyFen = "8/8/8/8/8/8/8/8 w KQkq - 0 1"
+  let newBoardWithRook = createFen
+  let emptyBoard = createBoard emptyFen
+  let highlights = Rules.getMoves 44 emptyBoard
+  printBoard emptyBoard highlights
   0
-  

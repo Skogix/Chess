@@ -6,7 +6,7 @@ let checkForCollision listlist =
   listlist
 module Rook =
   let getMoves (square:Square) (board:Board) =
-    let getAllMoves (id:Id) =
+    let getAllMoves (id:Id):Id list list =
       let file = Utility.getFileFromId id
       let rank = Utility.getRankFromId id
       [

@@ -7,3 +7,4 @@ let getMoves (id:Id) (board:Board) =
   match square.Content with
   | Rook _ -> Pieces.Rook.getMoves square board
   | _ -> []
+  |> List.concat
