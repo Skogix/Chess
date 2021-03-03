@@ -109,5 +109,4 @@ let createFen (board:Board) =
   let enPassant = match board.EnPassant with
     | Some (file, rank) -> (Utility.getNotationFromPosition file rank )
     | None -> "-"
-  let ( --> ) a b = a + " " + b
   pieces --> sideToMove --> castleRights --> enPassant --> (board.HalfMove |> string) --> (board.FullMove |> string)

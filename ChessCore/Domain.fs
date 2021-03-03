@@ -25,3 +25,4 @@ type CastleRights =
   | BlackQueenSide
   | BlackKingSide
 type MoveCounter = int
+let ( --> ) a b = a + " " + b
