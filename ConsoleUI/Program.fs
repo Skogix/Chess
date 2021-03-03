@@ -24,7 +24,7 @@ let printBoard (board:Board) (highlights:Id list) =
     if (isHighlighted square.Id) then Console.ForegroundColor <- ConsoleColor.Cyan
     printf "%c" (getGlyph square.Content)
     Console.ForegroundColor <- ConsoleColor.White
-    if Utility.getRankFromId square.Id = 8 then printfn ""
+    if Utility.getFileFromId square.Id = 8 then printfn ""
   printfn "%A to move" board.SideToMove
   printfn "Castles: %A" board.CastleRights
   printfn "EnPassant: %A" board.EnPassant
@@ -39,16 +39,16 @@ let printIds (board:Board) (highlights: Id list) =
     if (isHighlighted square.Id) then Console.ForegroundColor <- ConsoleColor.Cyan
     printf "%i" square.Id
     Console.ForegroundColor <- ConsoleColor.White
-    if Utility.getRankFromId square.Id = 8 then printfn ""
+    if Utility.getFileFromId square.Id = 8 then printfn ""
   for x in board.Squares do
     printSquare x
-    if Utility.getRankFromId x.Id = 8 then printfn ""
+    if Utility.getFileFromId x.Id = 8 then printfn ""
    
 let print x = printfn "%A" x
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
-  let activeId = 32
+  let activeId = 42
   
   let emptyFen = "bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb w KQkq - 0 1"
   let emptyBoard = createBoard emptyFen

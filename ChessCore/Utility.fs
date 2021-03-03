@@ -4,18 +4,18 @@ open ChessCore.Domain
 
 let squareIds =
   [
-    [81..88] @
-    [71..78] @
-    [61..68] @
-    [51..58] @
-    [41..48] @
-    [31..38] @
-    [21..28] @
-    [11..18]
+    [18..10..88] @
+    [17..10..87] @
+    [16..10..86] @
+    [15..10..85] @
+    [14..10..84] @
+    [13..10..83] @
+    [12..10..82] @
+    [11..10..81]
   ] |> List.concat
 let getNotationFromId id =
   let file =
-    match (id/10) % 10 with
+    match id/10 with
     | 1 -> 1
     | 2 -> 2
     | 3 -> 3
@@ -26,7 +26,7 @@ let getNotationFromId id =
     | 8 -> 8
     | _ -> failwith "notation file"
   let rank =
-    match ((id/1)%10) with
+    match id%10 with
     | 1 -> "a"
     | 2 -> "b"
     | 3 -> "c"
@@ -63,7 +63,7 @@ let getPosFromNotation (not:string): Position =
     (file , rank)
 let getIdFromNotation not: Id =
   let file, rank = getPosFromNotation not
-  (file + 10 + rank)
+  (file*10+rank)
 let getFileFromId (id:Id): File = id/10
 let getRankFromId (id:Id): Rank = id%10
 let getNotationFromPosition (file:File) (rank:Rank): Notation = getNotationFromId (rank*10+file)
