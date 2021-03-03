@@ -11,20 +11,20 @@ type Board = {
   FullMove: MoveCounter
 } with
   member this.Square id = this.Squares |> List.find (fun x -> x.Id = id)
-let getPieceFromCharAndColor char color =
-  match Char.ToLower char  with
-  | 'p' -> Pawn color
-  | 'r' -> Rook color
-  | 'n' -> Knight color
-  | 'b' -> Bishop color
-  | 'q' -> Queen color
-  | 'k' -> King color
-  | 'e' -> EnPassant color
-  | _ -> failwith "getPieceFromChar"
 let createBoard (fen:string) =
+  let getPieceFromCharAndColor char color =
+    match Char.ToLower char  with
+    | 'p' -> Pawn color
+    | 'r' -> Rook color
+    | 'n' -> Knight color
+    | 'b' -> Bishop color
+    | 'q' -> Queen color
+    | 'k' -> King color
+    | 'e' -> EnPassant color
+    | _ -> failwith "getPieceFromChar"
   let not = fen.Split ' '
   let (boardNotation, sideToMove, castleRights, enPassant, halfMove, fullMove) = (not.[0],not.[1], not.[2], not.[3], not.[4], not.[5])
-  let convertNotation =
+  let convertNotationToContent =
     let rec loop rest out =
       match rest with
       | [] -> out
@@ -37,7 +37,7 @@ let createBoard (fen:string) =
     loop (boardNotation |> Seq.toList) [] |> List.rev
   let createSquares (id, content) = {Id = id;Content = content}
   let outSquares =
-    convertNotation
+    convertNotationToContent
     |> List.concat
     |> List.zip Utility.squareIds
     |> List.map createSquares
@@ -79,7 +79,8 @@ let createFen (board:Board) =
         match rest with
         | x::rest when x.Content <> Empty && counter = 0 ->
           match x.Content with
-          | Pawn color | Rook color | Knight color | Bishop color | Queen color | King color -> loop rest ((getNotationFromPiece x.Content color)::out) counter
+          | Pawn color | Rook color | Knight color | Bishop color | Queen color | King color ->
+            loop rest ((getNotationFromPiece x.Content color)::out) counter
         | x::rest when x.Content = Empty -> loop rest out (counter+1)
         | x::rest when x.Content <> Empty && counter > 0 -> loop (x::rest) ((counter |> string |> char)::out) 0
         | [] when counter > 0 -> ((counter |> string |> char)::out)
