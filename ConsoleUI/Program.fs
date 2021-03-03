@@ -37,7 +37,7 @@ let printIds (board:Board) (highlights: Id list) =
   let isHighlighted (id:Id) = highlights |> List.contains id
   let printSquare (square:Square) =
     if (isHighlighted square.Id) then Console.ForegroundColor <- ConsoleColor.Cyan
-    printf "%i" square.Id
+    printf "%i|" square.Id
     Console.ForegroundColor <- ConsoleColor.White
     if Utility.getFileFromId square.Id = 8 then printfn ""
   for x in board.Squares do
@@ -48,13 +48,19 @@ let print x = printfn "%A" x
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
-  let activeId = 42
+  let activeId = 55
   
-  let emptyFen = "bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb w KQkq - 0 1"
-  let emptyBoard = createBoard emptyFen
+  let bishop = "bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb w KQkq - 0 1"
+  let rook = "rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr w KQkq - 0 1"
+  let queen = "qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq w KQkq - 0 1"
+  let king = "kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk w KQkq - 0 1"
+  let pawn = "pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp w KQkq - 0 1"
+  let knight = "nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn w KQkq - 0 1"
+  let emptyBoard = createBoard knight
   
   printBoard emptyBoard ((Rules.getMoves activeId emptyBoard))
 //  let highlights = Rules.getMoves 45 emptyBoard
   printIds emptyBoard ((Rules.getMoves activeId emptyBoard))
+  printfn "pieceId: %A" activeId
   printfn "%A" (Rules.getMoves activeId emptyBoard)
   0
