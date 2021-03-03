@@ -66,4 +66,4 @@ let getIdFromNotation not: Id =
   (file + 10 + rank)
 let getFileFromId (id:Id): File = id/10
 let getRankFromId (id:Id): Rank = id%10
-let getNotationFromPosition file rank: Notation = getNotationFromId (rank*10+file)
+let getNotationFromPosition (file:File) (rank:Rank): Notation = getNotationFromId (rank*10+file)

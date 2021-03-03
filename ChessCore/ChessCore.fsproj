@@ -8,8 +8,6 @@
         <Compile Include="Domain.fs" />
         <Compile Include="Utility.fs" />
         <Compile Include="Board.fs" />
-        <Compile Include="FEN.fs" />
-        <Compile Include="Init.fs" />
         <Compile Include="Pieces.fs" />
         <Compile Include="Rules.fs" />
     </ItemGroup>

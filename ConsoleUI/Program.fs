@@ -41,26 +41,22 @@ let print x = printfn "%A" x
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
-  let move0 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" |> createBoard 
-  let move1 = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" |> createBoard 
-//  let move2 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2" |> createBoard |> printBoard
-//  let move3 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2" |> createBoard |> printBoard
-  let emptyBoard54 = "8/8/8/3R4/8/8/8/8 w KQkq - 0 1" |> createBoard
-  let rookMoves = Rules.getMoves 54 emptyBoard54 |> List.concat
-//  printBoard emptyBoard54 rookMoves
-  printIds move0
-//  printfn "%A" rookMoves
-  printfn "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-  createFen move1 |> printfn "%s"
-//  move0 |> printBoard
-//  move0 |> printPositions
-//  printBoard emptyBoardWithRook
-//  printPositions emptyBoardWithRook
-//  emptyBoardWithRookAt11 |> printBoard
-//  emptyBoardWithRookAt11 |> printIds
-//  Rules.getMoves 54 emptyBoardWithRookAt11 |> print
-//  Rules.getMoves 54 emptyBoardWithRookAt11 |> List.map Utility.getNotation |> print
-//  Utility.getNotation 54 |> print
+  let move0 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" 
+  let move1 = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" 
+  let move2 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2" 
+  let move3 = "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
+  let board0 = createBoard move0
+  let board1 = createBoard move1
+  let board2 = createBoard move2
+  let board3 = createBoard move3
+  move0 |> printfn "%s"
+  board0 |> createFen |> printfn "%s"
+  move1 |> printfn "%s"
+  board1 |> createFen |> printfn "%s"
+  move2 |> printfn "%s"
+  board2 |> createFen |> printfn "%s"
+  move3 |> printfn "%s"
+  board3 |> createFen |> printfn "%s"
   
   
   Console.ReadKey() |> ignore
