@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Utility.fs" />
         <Compile Include="Domain.fs" />
+        <Compile Include="Utility.fs" />
         <Compile Include="Board.fs" />
         <Compile Include="FEN.fs" />
         <Compile Include="Init.fs" />
