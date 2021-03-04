@@ -1,4 +1,6 @@
 module ChessCore.Domain
+
+
 type Rank = int
 type File = int
 type Position = File * Rank
@@ -14,7 +16,10 @@ type Content =
   | Queen of Color
   | King of Color
   | EnPassant of Color
-type Id = int
+type System.Int32 with
+  member this.File = this%10
+  member this.Rank = this/10
+type Id = int 
 type Square = {
   Content: Content
   Id: Id

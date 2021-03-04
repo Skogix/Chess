@@ -2,13 +2,6 @@ module ChessCore.Pieces
 
 open ChessCore.Board
 open ChessCore.Domain
-let checkForCollision listlist =
-  listlist
-type Direction =
-  | Up
-  | Down
-  | Left
-  | Right
 let getBasicMoves (square:Square) (board:Board) =
   let file = Utility.getFileFromId square.Id
   let rank = Utility.getRankFromId square.Id
@@ -49,11 +42,22 @@ let getBasicMoves (square:Square) (board:Board) =
         id-10+2;id-10-2
       ]
     ]
-  match square.Content with
-  | Rook _ -> straightMoves
-  | Bishop _ -> diagonalMoves
-  | Queen _ -> diagonalMoves @ straightMoves
-  | King _ -> (diagonalMoves @ straightMoves) |> List.map (fun x -> [x.Head])
-  | Pawn _ -> pawnMoves
-  | Knight _ -> knightMoves
-  | _ -> []
+  let getMoves =
+    match square.Content with
+    | Rook _ ->
+      straightMoves
+    | Bishop _ ->
+      diagonalMoves
+    | Queen _ ->
+      diagonalMoves @ straightMoves
+    | King _ ->
+      (diagonalMoves @ straightMoves)
+      |> List.filter (fun x -> x <> [])
+      |> List.map (fun x -> [x.Head])
+    | Pawn _ ->
+      pawnMoves
+    | Knight _ ->
+      knightMoves
+    | _ -> []
+  getMoves
+  |> List.filter (fun x -> x <> [])

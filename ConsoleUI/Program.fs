@@ -1,54 +1,12 @@
 ﻿open System
 open ChessCore
 open ChessCore.Board
-open ChessCore.Domain
-open ChessCore.Pieces
-let printBoard (board:Board) (highlights:Id list) =
-  let isHighlighted (id:Id) = highlights |> List.contains id
-  let getGlyph = function
-        | Pawn White ->   '♙'
-        | Bishop White -> '♗'
-        | Knight White -> '♘'
-        | Rook White ->   '♖'
-        | Queen White ->  '♕'
-        | King White ->   '♔'
-        
-        | Pawn Black ->   '♟'
-        | Bishop Black -> '♝'
-        | Knight Black -> '♞'
-        | Rook Black ->   '♜'
-        | Queen Black ->  '♛'
-        | King Black ->   '♚'
-        | Empty -> '.'
-  let printSquare (square:Square) =
-    if (isHighlighted square.Id) then Console.ForegroundColor <- ConsoleColor.Cyan
-    printf "%c" (getGlyph square.Content)
-    Console.ForegroundColor <- ConsoleColor.White
-    if Utility.getFileFromId square.Id = 8 then printfn ""
-  printfn "%A to move" board.SideToMove
-  printfn "Castles: %A" board.CastleRights
-  printfn "EnPassant: %A" board.EnPassant
-  printfn "FullMoves: %A" board.FullMove
-  printfn "HalfMoves: %A" board.HalfMove
-  board.Squares
-  |> List.iter printSquare
-    
-let printIds (board:Board) (highlights: Id list) =
-  let isHighlighted (id:Id) = highlights |> List.contains id
-  let printSquare (square:Square) =
-    if (isHighlighted square.Id) then Console.ForegroundColor <- ConsoleColor.Cyan
-    printf "%i|" square.Id
-    Console.ForegroundColor <- ConsoleColor.White
-    if Utility.getFileFromId square.Id = 8 then printfn ""
-  for x in board.Squares do
-    printSquare x
-    if Utility.getFileFromId x.Id = 8 then printfn ""
-   
-let print x = printfn "%A" x
+open ConsoleUI
+open Ui
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
-  let activeId = 55
+  let activeId = 11
   
   let bishop = "bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb w KQkq - 0 1"
   let rook = "rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr w KQkq - 0 1"
@@ -56,11 +14,17 @@ let main argv =
   let king = "kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk w KQkq - 0 1"
   let pawn = "pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp w KQkq - 0 1"
   let knight = "nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn w KQkq - 0 1"
-  let emptyBoard = createBoard knight
+  let board = createBoard pawn
+  let allFens = [bishop;rook;queen;king;pawn;knight]
   
-  printBoard emptyBoard ((Rules.getMoves activeId emptyBoard))
-//  let highlights = Rules.getMoves 45 emptyBoard
-  printIds emptyBoard ((Rules.getMoves activeId emptyBoard))
+  
+  
+  
+  
+  
+  
+  printBoard board ((Rules.getMoves activeId board))
+  printIds board ((Rules.getMoves activeId board))
   printfn "pieceId: %A" activeId
-  printfn "%A" (Rules.getMoves activeId emptyBoard)
+  Rules.getMoves activeId board |> printfn "allMoves: %A"
   0
