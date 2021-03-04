@@ -13,7 +13,7 @@ let main argv =
   
   let board = (Fen.createBoard initFen)
   board
-  |> printBoardUi
+//  |> printBoardUi
   |> printPositions
   |> printBoardByRank
   

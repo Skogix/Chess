@@ -48,8 +48,8 @@ let printBoardUi (board:Board): Board =
   board
 let printPositions (board:Board): Board =
   let printPos ((rank, file), content) =
-    printf "%i%i" rank file
-    if file = 8 then printfn ""
+    printf "|%i%i" rank file
+    if file = 8 then printfn "|"
   board
   |> Map.toList
   |> List.iter printPos

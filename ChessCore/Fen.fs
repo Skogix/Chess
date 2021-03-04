@@ -2,8 +2,6 @@ module ChessCore.Fen
 
 open ChessCore.Domain
 
-  
-
 let createBoard (fen:Fen): Board =
   let pieces = (fen.Split ' ').[0].ToCharArray()
   let convertNumberToDot char =
