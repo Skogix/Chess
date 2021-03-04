@@ -1,6 +1,8 @@
 ﻿open System
 open ChessCore
 open ChessCore.Domain
+open ConsoleUI
+open Ui
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
@@ -11,8 +13,9 @@ let main argv =
   
   let board = (Fen.createBoard initFen)
   board
-  |> printfn "%A"
-  
+  |> printBoardUi
+  |> printPositions
+  |> printBoardByRank
   
   
   
