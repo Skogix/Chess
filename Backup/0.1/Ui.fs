@@ -5,7 +5,6 @@ open ChessCore
 open ChessCore.Board
 open ChessCore.Domain
 open ChessCore.State
-
 let getGlyph (square:Content): char * ConsoleColor =
       match square with
       | Pawn White ->   '♙', ConsoleColor.DarkYellow
@@ -22,7 +21,7 @@ let getGlyph (square:Content): char * ConsoleColor =
       | Queen Black ->  '♛', ConsoleColor.DarkCyan
       | King Black ->   '♚', ConsoleColor.DarkCyan
       | Empty -> '.', ConsoleColor.Gray
-let setHighlight (square:Square) (highlights:Highlights) (pieceColor:ConsoleColor) =
+let setHighlight (square:Square) (highlights:Id list option) (pieceColor:ConsoleColor) =
   let color =
     match highlights with
     | _ when highlights.ActivePiece = square.Id -> ConsoleColor.Blue
@@ -30,13 +29,16 @@ let setHighlight (square:Square) (highlights:Highlights) (pieceColor:ConsoleColo
     | _ -> pieceColor
   Console.ForegroundColor <- color
 let printOutput (output:Output) =
-  let printSquare (highlights:Highlights) (square:Square)  =
+  let printSquare (square:Square) (highlights: Id list option)=
     let glyph, pieceColor = getGlyph square.Content
     setHighlight square highlights pieceColor
     printf "%c" glyph
     if Utility.getFileFromId square.Id = 8 then printfn ""
     state
     |> List.iter (printSquare highlights)
+  match output with
+  | ShowBoard -> ()
+  | ShowPieceMovement -> ()
 let printIds (board:Board) (highlights: Id list) =
   let isHighlighted (id:Id) = highlights |> List.contains id
   let printSquare (square:Square) =

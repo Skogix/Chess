@@ -5,15 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Domain.fs" />
-        <Compile Include="Utility.fs" />
-        <Compile Include="Board.fs" />
-        <Compile Include="Pieces.fs" />
-        <Compile Include="Rules.fs" />
-        <Compile Include="State.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Reference Include="System.Private.Xml, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
         <HintPath>..\..\..\..\..\usr\share\rider\lib\ReSharperHost\linux-x64\dotnet\shared\Microsoft.NETCore.App\3.1.8\System.Private.Xml.dll</HintPath>
       </Reference>

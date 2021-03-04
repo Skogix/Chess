@@ -1,18 +1,30 @@
-# ToDo
-- 1.4
-  - gamestate-agent 
-    - fenstring som gamestate
-    - command history
-    - let selectPiece -> Command list * Board * Highlight
-- Hantera capture
-- Loopa och spara alla basicMoves
+##### 0.1 VCS and routines
+```
+- Versioning with routines
+  - Create README
+  - Scratch and ToDo
+  - Clean projects and start with domain and architecture
+```
+### ToDo
+```
+- Basic moves
 - EnPassant
-- Castleing
-- Input -> Commands
-- Hantera state / history / agents
-- Types f'o'r io och state
-- Logger/Debug for testing
-
+- Check
+- Castle
+- Input -> Output
+- StateAgent
+  - Generic agents
+- Look over types, domain and general architecture
+  - Refactor to use the same domain everywhere
+  - Outside-in modeling
+  - Use modules as domain instead of OOP-objects
+- Readme and documentation
+```
+### Domain
 ```f#
-let 
+.
+```
+##### Scratch
+```
+.
 ```
