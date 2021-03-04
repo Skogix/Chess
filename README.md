@@ -1,27 +1,8 @@
 ###### 0.2
 ```
-Domain
-- Input Commands
-- Output
-- Events
-- Agents
-  - GameAgent
-  - StateAgents
-- Fen
-  - rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-  - Pieces
-  - TurnToMove
-  - CastleRights
-  - EnPassant
-  - HalfMove
-  - FullMove
-- Board
-  - Squares
-    - File: 1 to 8
-    - Rank: 1 to 8
-    - Id: File*10+Rank, ie File 4, Rank 6 = 46
-    - Content: Piece | Empty | EnPassant
-  - 
+0.21 CreateFen
+0.11 Domain and modules
+0.10 VCS and project
 ```
 ####### 1.0
 ```f#
@@ -30,7 +11,7 @@ let game = Game.Create(initFen)
 //Select a pieceId and get available moves
 let availableMoves = game.SelectPiece XX
 //Reply with a moveId and get new state
-let moveReturn = game.Move availableMoves.X
+let moveReturn = game.Move availableMoves X
 ```
 ### ToDo
 ```
@@ -49,16 +30,25 @@ let moveReturn = game.Move availableMoves.X
 ```
 ### Domain
 ```f#
-.
+// Board
+type Rank = int // 1 to 8
+type File = int // 1 to 8
+type Id = File * Rank
+type Color = White | Black
+type Piece =
+  | Pawn of Color
+  | Bishop of Color
+  | Knight of Color
+  | Rook of Color
+  | Queen of Color
+  | King of Color
+type Content =
+    | Empty
+    | Piece of Piece
+type Square = Id * Content
+type Board = Map (Id Content)
 ```
 ##### Scratch
 ```
 .
-```
-##### 0.1 VCS and routines
-```
-- Versioning with routines
-  - Create README
-  - Scratch and ToDo
-  - Cleanup
 ```

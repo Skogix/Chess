@@ -1,17 +1,13 @@
 ﻿open System
 open ChessCore
-open ChessCore.Board
-open ConsoleUI
-open Ui
+open ChessCore.Domain
 [<EntryPoint>]
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
   
-  
-//  let game = State.gameAgent(pawnFen)
-//  let huhu = game.SelectSquare 23
-//  let move = game.Move {From = 23; To = 24}
-//  huhu |> printOutput
-//  move |> printOutput
+  let initFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  let game = Game.Create(initFen)
+//  let availableMoves = game.SelectPiece 11
+//  let moveReturn = game.Move availableMoves 1
   Console.ReadKey() |> ignore
   0
