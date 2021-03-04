@@ -1,6 +1,7 @@
 ###### 0.2
 ```
-0.21 CreateFen
+0.22 Basic output/UI
+0.21 CreateBoard
 0.11 Domain and modules
 0.10 VCS and project
 ```
@@ -30,25 +31,7 @@ let moveReturn = game.Move availableMoves X
 ```
 ### Domain
 ```f#
-// Board
-type Rank = int // 1 to 8
-type File = int // 1 to 8
-type Id = File * Rank
-type Color = White | Black
-type Piece =
-  | Pawn of Color
-  | Bishop of Color
-  | Knight of Color
-  | Rook of Color
-  | Queen of Color
-  | King of Color
-type Content =
-    | Empty
-    | Piece of Piece
-type Square = Id * Content
-type Board = Map (Id Content)
 ```
 ##### Scratch
 ```
-.
 ```

@@ -16,7 +16,7 @@ type Content =
   | Empty
   | Piece of Piece
 type Square = Id * Content
-type Board = Id -> Content list
+type Board = Map<Id, Content>
 type State = {
   Fen: string
   Board: Board
@@ -39,3 +39,31 @@ type Output = {
 // State
 type CreateBoard = Fen -> Board
 type CreateGame = Fen -> MailboxProcessor<Command>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let initFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+let boardIds: Id list =
+  [
+    for x = 8 downto 1 do
+      for y = 1 to 8 do
+        (x,y)
+  ]
+let emptyBoard: Board =
+  boardIds
+  |> List.map (fun id -> (id, Empty))
+  |> Map.ofList
