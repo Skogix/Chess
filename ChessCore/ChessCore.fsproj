@@ -10,6 +10,7 @@
         <Compile Include="Board.fs" />
         <Compile Include="Pieces.fs" />
         <Compile Include="Rules.fs" />
+        <Compile Include="State.fs" />
     </ItemGroup>
 
     <ItemGroup>

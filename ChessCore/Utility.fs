@@ -67,3 +67,4 @@ let getIdFromNotation not: Id =
 let getFileFromId (id:Id): File = id/10
 let getRankFromId (id:Id): Rank = id%10
 let getNotationFromPosition (file:File) (rank:Rank): Notation = getNotationFromId (rank*10+file)
+let initBoardFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
