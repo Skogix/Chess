@@ -35,14 +35,8 @@ let printOutput (output:Output) =
     setHighlight square highlights pieceColor
     printf "%c" glyph
     if Utility.getFileFromId square.Id = 8 then printfn ""
-  match output with
-  | ShowMoves (state, highlights) -> 
     state
     |> List.iter (printSquare highlights)
-  | BoardState (state) ->
-    state
-    |> List.iter (printSquare { ActivePiece = 0
-                                Moves = []})
 let printIds (board:Board) (highlights: Id list) =
   let isHighlighted (id:Id) = highlights |> List.contains id
   let printSquare (square:Square) =
