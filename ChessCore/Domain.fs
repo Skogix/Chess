@@ -24,6 +24,7 @@ type Square = {
   Content: Content
   Id: Id
 }
+type Squares = Square list
 type CastleRights =
   | WhiteQueenSide
   | WhiteKingSide

@@ -30,14 +30,19 @@ let setHighlight (square:Square) (highlights:Highlights) (pieceColor:ConsoleColo
     | _ -> pieceColor
   Console.ForegroundColor <- color
 let printOutput (output:Output) =
-  let board, highlights = output
-  let printSquare (square:Square) =
+  let printSquare (highlights:Highlights) (square:Square)  =
     let glyph, pieceColor = getGlyph square.Content
     setHighlight square highlights pieceColor
     printf "%c" glyph
     if Utility.getFileFromId square.Id = 8 then printfn ""
-  board.Squares
-  |> List.iter printSquare
+  match output with
+  | ShowMoves (state, highlights) -> 
+    state
+    |> List.iter (printSquare highlights)
+  | BoardState (state) ->
+    state
+    |> List.iter (printSquare { ActivePiece = 0
+                                Moves = []})
 let printIds (board:Board) (highlights: Id list) =
   let isHighlighted (id:Id) = highlights |> List.contains id
   let printSquare (square:Square) =
@@ -53,9 +58,9 @@ let print x = printfn "%A" x
 
 
 
-let bishopFen = "bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb/bbbbbbbb w KQkq - 0 1"
-let rookFen = "rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr/rrrrrrrr w KQkq - 0 1"
-let queenFen = "qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq/qqqqqqqq w KQkq - 0 1"
-let kingFen = "kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk/kkkkkkkk w KQkq - 0 1"
-let pawnFen = "pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp w KQkq - 0 1"
-let knightFen = "nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn/nnnnnnnn w KQkq - 0 1"
+let bishopFen = "BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB/BBBBBBBB w KQkq - 0 1"
+let rookFen = "RRRRRRRR/RRRRRRRR/RRRRRRRR/RRRRRRRR/RRRRRRRR/RRRRRRRR/RRRRRRRR/RRRRRRRR w KQkq - 0 1"
+let queenFen = "QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ w KQkq - 0 1"
+let kingFen = "KKKKKKKK/KKKKKKKK/KKKKKKKK/KKKKKKKK/KKKKKKKK/KKKKKKKK/KKKKKKKK/KKKKKKKK w KQkq - 0 1"
+let pawnFen = "PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w KQkq - 0 1"
+let knightFen = "NNNNNNNN/NNNNNNNN/NNNNNNNN/NNNNNNNN/NNNNNNNN/NNNNNNNN/NNNNNNNN/NNNNNNNN w KQkq - 0 1"
