@@ -42,7 +42,7 @@ let boardIds: Id list =
   [
     for x = 8 downto 1 do
       for y = 1 to 8 do
-        (x,y)
+        (y,x)
   ]
 let emptyBoard: Board =
   boardIds

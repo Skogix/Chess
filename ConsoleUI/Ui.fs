@@ -2,55 +2,51 @@ module ConsoleUI.Ui
 
 open System
 open ChessCore.Domain
+
+type PrintType =
+  | ByRank
+  | ByCursorPosition
+  | Positions
+let whiteColor = ConsoleColor.DarkYellow
+let blackColor = ConsoleColor.DarkBlue
+let emptyColor = ConsoleColor.Gray
+
 let getGlyph (piece:Piece) =
   match piece with
-    | Pawn White ->   '♙', ConsoleColor.DarkYellow
-    | Bishop White -> '♗', ConsoleColor.DarkYellow
-    | Knight White -> '♘', ConsoleColor.DarkYellow
-    | Rook White ->   '♖', ConsoleColor.DarkYellow
-    | Queen White ->  '♕', ConsoleColor.DarkYellow
-    | King White ->   '♔', ConsoleColor.DarkYellow
+    | Pawn White ->   '♙', whiteColor
+    | Bishop White -> '♗', whiteColor
+    | Knight White -> '♘', whiteColor
+    | Rook White ->   '♖', whiteColor
+    | Queen White ->  '♕', whiteColor
+    | King White ->   '♔', whiteColor
     
-    | Pawn Black ->   '♟', ConsoleColor.DarkCyan
-    | Bishop Black -> '♝', ConsoleColor.DarkCyan
-    | Knight Black -> '♞', ConsoleColor.DarkCyan
-    | Rook Black ->   '♜', ConsoleColor.DarkCyan
-    | Queen Black ->  '♛', ConsoleColor.DarkCyan
-    | King Black ->   '♚', ConsoleColor.DarkCyan
-let getCharAndColor (content:Content) =
+    | Pawn Black ->   '♟', blackColor
+    | Bishop Black -> '♝', blackColor
+    | Knight Black -> '♞', blackColor
+    | Rook Black ->   '♜', blackColor
+    | Queen Black ->  '♛', blackColor
+    | King Black ->   '♚', blackColor
+let getCharAndColorFromContent (content:Content) =
   match content with
   | Piece x -> getGlyph x
-  | Empty -> '.', ConsoleColor.Gray
+  | Empty -> '.', emptyColor
 let printGlyph char color =
   Console.ForegroundColor <- color
   printf "%c" char
   Console.ForegroundColor <- ConsoleColor.White
-let printBoardByRank (board:Board): Board =
-  let listBoard = board |> Map.toList
-  let printPiece ((_, file), content:Content) =
-    let glyph, color = getCharAndColor content
-    printGlyph glyph color
+let getRank (r:Rank) (board:Board) =
+  board |> Map.toList |> List.filter (fun ((file, rank), content) -> rank = r)
+let printBoard (printType:PrintType) (board:Board) =
+  let ranks =
+    [for r = 8 downto 1 do
+      getRank r board] |> List.concat
+  for x in ranks do
+    let (file, rank), content = x
+    let char, color = getCharAndColorFromContent content
+    match printType with
+    | ByRank -> printGlyph char color
+    | ByCursorPosition ->
+      Console.SetCursorPosition(file, rank)
+      printGlyph char color
+    | Positions -> printf "%i%i " file rank
     if file = 8 then printfn ""
-  listBoard
-  |> List.iter printPiece
-  board
-let printBoardUi (board:Board): Board =
-  let print (file, rank) content =
-    Console.SetCursorPosition(rank, file) // åt fel håll pga file/rank är inte x/y
-    let glyph, color = getCharAndColor content
-    Console.ForegroundColor <- color
-    printf "%c" glyph
-    ()
-  Console.Clear()
-  board
-  |> Map.iter print
-  printfn ""
-  board
-let printPositions (board:Board): Board =
-  let printPos ((rank, file), content) =
-    printf "|%i%i" rank file
-    if file = 8 then printfn "|"
-  board
-  |> Map.toList
-  |> List.iter printPos
-  board

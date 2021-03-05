@@ -11,16 +11,13 @@ let main argv =
 //  let huhu = agent.GetBoard 
 //  huhu |> printBoardByRank
   
-//  let move = agent.Move {From=(1,1);To=(1,3)}
-//  move |> printBoardByRank
   let b1 = agent.GetBoard
-  b1 |> printPositions
-  let whiteRook: Content = Piece(Rook White)
-  let b2 = b1.Add ((5,3),whiteRook)
-  b2 |> printBoardByRank
+  let move = agent.Move {From=(1,1);To=(1,3)}
+//  b1 |> printBoard ByCursorPosition
+  move |> printBoard ByRank 
+  move |> printBoard Positions 
+
   
-//  let board = (Fen.createBoard initFen)
-//  board
 ////  |> printBoardUi
 //  |> printPositions
 //  |> printBoardByRank
