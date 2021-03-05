@@ -10,6 +10,7 @@ type PrintType =
 let whiteColor = ConsoleColor.DarkYellow
 let blackColor = ConsoleColor.DarkBlue
 let emptyColor = ConsoleColor.Gray
+let highlightColor = ConsoleColor.Magenta
 
 let getGlyph (piece:Piece) =
   match piece with
@@ -30,13 +31,18 @@ let getCharAndColorFromContent (content:Content) =
   match content with
   | Piece x -> getGlyph x
   | Empty -> '.', emptyColor
-let printGlyph char color =
+let printGlyph char color highlights =
   Console.ForegroundColor <- color
   printf "%c" char
   Console.ForegroundColor <- ConsoleColor.White
 let getRank (r:Rank) (board:Board) =
   board |> Map.toList |> List.filter (fun ((file, rank), content) -> rank = r)
+  
+  // todo Highlights
+  
 let printBoard (printType:PrintType) (board:Board) (highlights:Move list option) =
+    if (highlights |> List.map (fun x -> x.To) |> List.contains (file, rank))
+        then Console.BackgroundColor <- highlightColor
   let ranks =
     [for r = 8 downto 1 do
       getRank r board] |> List.concat
@@ -44,8 +50,11 @@ let printBoard (printType:PrintType) (board:Board) (highlights:Move list option)
     let (file, rank), content = x
     let char, color = getCharAndColorFromContent content
     match printType with
-    | ByRank -> printGlyph char color
+    | ByRank ->
+      Highlight (file, rank) highlights
+      printGlyph char color
     | ByCursorPosition ->
+      Highlight (file, rank) highlights
       Console.SetCursorPosition(file, rank)
       printGlyph char color
     | Positions -> printf "%i%i " file rank

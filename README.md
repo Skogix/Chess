@@ -1,5 +1,7 @@
 ###### 0.2
 ```
+0.242 Ui highlights
+0.241 Straight moves
 0.240 Get valid basic moves from pieces
 0.231 Board positions/Ids
 0.230 Agents
