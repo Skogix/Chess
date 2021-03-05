@@ -17,28 +17,9 @@ type Content =
   | Piece of Piece
 type Square = Id * Content
 type Board = Map<Id, Content>
-type State = {
-  Fen: string
-  Board: Board
-  // all annan info som behovs eller bara fen?
-}
 
-// IO
-type Move =
-  | From of Id
-  | To of Id
-type Command =
-  | Move of Move
-  | SelectPiece of Id
-type Output = {
-  Board: Board
-  Commands: Command list
-  // eventuell extra info som highlighted squares osv
-}
 
-// State
-type CreateBoard = Fen -> Board
-type CreateGame = Fen -> MailboxProcessor<Command>
+
 
 
 
