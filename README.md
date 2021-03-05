@@ -1,5 +1,6 @@
 ###### 0.2
 ```
+0.231 Board positions/Ids
 0.23 Agents
 0.22 Basic output/UI
 0.21 CreateBoard
