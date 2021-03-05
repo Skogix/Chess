@@ -1,11 +1,12 @@
 ###### 0.2
 ```
+0.240 Get valid basic moves from pieces
 0.231 Board positions/Ids
-0.23 Agents
-0.22 Basic output/UI
-0.21 CreateBoard
-0.11 Domain and modules
-0.10 VCS and project
+0.230 Agents
+0.220 Basic output/UI
+0.210 CreateBoard
+0.110 Domain and modules
+0.100 VCS and project
 ```
 ####### 1.0
 ```f#
@@ -18,13 +19,20 @@ let moveReturn = game.Move availableMoves X
 ```
 ### ToDo
 ```
+- Functions
+  - getAllPossibleMoves piece
+  
 - Basic moves
-- EnPassant
-- Check
-- Castle
+  - All moves that can be made
+    - Block / Capture
 - Input -> Output
 - StateAgent
+  - Handle state
+    - EnPassant
+    - Check
+    - Castle
   - Generic agents
+- Create fen from state
 - Look over types, domain and general architecture
   - Refactor to use the same domain everywhere
   - Outside-in modeling

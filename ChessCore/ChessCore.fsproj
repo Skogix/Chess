@@ -13,6 +13,7 @@
     <ItemGroup>
       <Compile Include="Domain.fs" />
       <Compile Include="Fen.fs" />
+      <Compile Include="Piece.fs" />
       <Compile Include="State.fs" />
       <Compile Include="Game.fs" />
     </ItemGroup>

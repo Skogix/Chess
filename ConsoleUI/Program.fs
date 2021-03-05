@@ -13,9 +13,14 @@ let main argv =
   
   let b1 = agent.GetBoard
   let move = agent.Move {From=(1,1);To=(1,3)}
-//  b1 |> printBoard ByCursorPosition
-  move |> printBoard ByRank 
-  move |> printBoard Positions 
+  move |> printBoard ByRank
+  let moves = agent.SelectPiece (1,1)
+  let a, b = moves
+  printfn "%A" b
+  moves |> printBoard ByRank
+//  move |> printBoard ByRank 
+//  move |> printBoard Positions
+//  moves |> printfn "%A"
 
   
 ////  |> printBoardUi

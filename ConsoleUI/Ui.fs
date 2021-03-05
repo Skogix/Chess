@@ -36,7 +36,7 @@ let printGlyph char color =
   Console.ForegroundColor <- ConsoleColor.White
 let getRank (r:Rank) (board:Board) =
   board |> Map.toList |> List.filter (fun ((file, rank), content) -> rank = r)
-let printBoard (printType:PrintType) (board:Board) =
+let printBoard (printType:PrintType) (board:Board) (highlights:Move list option) =
   let ranks =
     [for r = 8 downto 1 do
       getRank r board] |> List.concat

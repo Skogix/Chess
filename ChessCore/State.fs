@@ -3,17 +3,6 @@ module ChessCore.State
 open System.Runtime.CompilerServices
 open ChessCore.Domain
 
-type StateCommand<'T> =
-  | Add of AsyncReplyChannel<'T> * 'T
-  | Get of AsyncReplyChannel<'T>
-type Move = {
-  From:Id
-  To:Id
-}
-type Command =
-  | Move of AsyncReplyChannel<Board> * Move
-  | SelectPiece of Id
-  | GetBoard of AsyncReplyChannel<Board>
 
 type StateAgent<'T>(init:'T) =
   let mailbox = MailboxProcessor.Start(fun inbox ->
@@ -45,6 +34,8 @@ type GameAgent(initFen) =
         let newBoardState = boardState.Add newBoard
         rc.Reply newBoardState
         loop (command::commandHistory)
+      | SelectPiece (rc, id) ->
+        rc.Reply (boardState.Get, Piece.getAllValidMoves id boardState.Get)
       return! loop commandHistory
     }
     loop []
@@ -52,5 +43,6 @@ type GameAgent(initFen) =
   member this.Command command = mailbox.PostAndReply (fun channel -> command(channel))
   member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel))
   member this.Move move = mailbox.PostAndReply (fun channel -> Move(channel, move))
+  member this.SelectPiece id = mailbox.PostAndReply (fun channel -> SelectPiece(channel, id))
 
 // todo boardstate vs board, vad är skillnaden osv

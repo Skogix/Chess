@@ -1,10 +1,10 @@
 module ChessCore.Domain
 
+// Board 
 type Rank = int
 type File = int
 type Id = File * Rank
 type Color = White | Black
-type Fen = string
 type Piece =
   | Pawn of Color
   | Bishop of Color
@@ -18,7 +18,21 @@ type Content =
 type Square = Id * Content
 type Board = Map<Id, Content>
 
+// Fen
+type Fen = string
 
+// State
+type StateCommand<'T> =
+  | Add of AsyncReplyChannel<'T> * 'T
+  | Get of AsyncReplyChannel<'T>
+type Move = {
+  From:Id
+  To:Id
+}
+type Command =
+  | Move of AsyncReplyChannel<Board> * Move
+  | SelectPiece of AsyncReplyChannel<Board * Move list> * Id
+  | GetBoard of AsyncReplyChannel<Board>
 
 
 
