@@ -1,5 +1,6 @@
 ###### 0.2
 ```
+0.243 Diagnonal moves
 0.242 Ui highlights
 0.241 Straight moves
 0.240 Get valid basic moves from pieces
