@@ -9,16 +9,15 @@ open Ui
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
   Console.BackgroundColor <- ConsoleColor.Black
-  let agent = GameAgent(initFen)
+  let huhuFen = "rnbqkbnr/pppppppp/8/8/3B4/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  let agent = GameAgent(huhuFen)
 //  let huhu = agent.GetBoard 
 //  huhu |> printBoardByRank
+  let huhuBoard = agent.GetOutput
+  let huhuSelectPiece = agent.SelectPiece (4,4)
   
-  let b1 = agent.GetBoard
-  let move = agent.Move {From=(1,1);To=(4,4)}
-  let moves = { Board = move.Board
-                SelectedPiece = Some (4,4)
-                PossibleMoves = Some (Piece.getAllValidMoves (4,4) move.Board)}
-  moves |> printBoard ByRank
+  huhuBoard |> printBoard ByRank
+  huhuSelectPiece |> printBoard ByRank
 //  move |> printBoard Positions
 //  moves |> printfn "%A"
 

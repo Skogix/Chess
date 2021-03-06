@@ -11,9 +11,9 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
   let straightMoves =
     [
       [for x = 8 downto file do (x, rank)]
-      [for x = file     to 8 do (x, rank)]
+      [for x = 1 to file do (x, rank)]
       [for x = 8 downto rank do (file, x)]
-      [for x = rank     to 8 do (file, x)]
+      [for x = 1 to rank do (file, x)]
     ]
   let diagonalMoves =
     [

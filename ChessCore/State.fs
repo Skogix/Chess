@@ -11,7 +11,7 @@ type Output = {
 type Command =
   | Move of AsyncReplyChannel<Output> * Move
   | SelectPiece of AsyncReplyChannel<Output> * Id
-  | GetBoard of AsyncReplyChannel<Board>
+  | GetBoard of AsyncReplyChannel<Output>
 
 type StateAgent<'T>(init:'T) =
   let mailbox = MailboxProcessor.Start(fun inbox ->
@@ -34,7 +34,9 @@ type GameAgent(initFen) =
     let rec loop commandHistory = async {
       let! command = inbox.Receive()
       match command with
-      | GetBoard rc -> rc.Reply boardState.Get
+      | GetBoard rc -> rc.Reply { Board = boardState.Get
+                                  SelectedPiece = None
+                                  PossibleMoves = None}
       | Move (rc, move) ->
         printfn "newboard %A" move
         let oldBoard = boardState.Get
@@ -55,7 +57,7 @@ type GameAgent(initFen) =
     loop []
     )
   member this.Command command = mailbox.PostAndReply (fun channel -> command(channel))
-  member this.GetBoard = mailbox.PostAndReply (fun channel -> GetBoard(channel))
+  member this.GetOutput = mailbox.PostAndReply (fun channel -> GetBoard(channel))
   member this.Move move = mailbox.PostAndReply (fun channel -> Move(channel, move))
   member this.SelectPiece id = mailbox.PostAndReply (fun channel -> SelectPiece(channel, id))
 
