@@ -14,8 +14,10 @@ let main argv =
 //  huhu |> printBoardByRank
   
   let b1 = agent.GetBoard
-  let move = agent.Move {From=(1,1);To=(1,3)}
-  let moves = agent.SelectPiece (1,1)
+  let move = agent.Move {From=(1,1);To=(4,4)}
+  let moves = { Board = move.Board
+                SelectedPiece = Some (4,4)
+                PossibleMoves = Some (Piece.getAllValidMoves (4,4) move.Board)}
   moves |> printBoard ByRank
 //  move |> printBoard Positions
 //  moves |> printfn "%A"

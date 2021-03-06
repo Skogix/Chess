@@ -52,6 +52,7 @@ let printBoard (printType:PrintType) (output:Output)=
     | None -> ()
     match output.SelectedPiece with
     | Some id -> if id = x then Console.BackgroundColor <- selectedPieceColor
+    | None -> ()
   let board = output.Board
   let ranks =
     [for r = 8 downto 1 do

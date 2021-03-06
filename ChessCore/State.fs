@@ -38,7 +38,7 @@ type GameAgent(initFen) =
       | Move (rc, move) ->
         printfn "newboard %A" move
         let oldBoard = boardState.Get
-        let content = Piece(Rook White)
+        let content = Piece(Bishop White)
         let newBoard = oldBoard.Add(move.To, content)
         let newBoardState = boardState.Add newBoard
         rc.Reply { Board = newBoardState
