@@ -29,10 +29,6 @@ type Move = {
   From:Id
   To:Id
 }
-type Command =
-  | Move of AsyncReplyChannel<Board> * Move
-  | SelectPiece of AsyncReplyChannel<Board * Move list> * Id
-  | GetBoard of AsyncReplyChannel<Board>
 
 
 

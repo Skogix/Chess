@@ -3,6 +3,15 @@ module ChessCore.State
 open System.Runtime.CompilerServices
 open ChessCore.Domain
 
+type Output = {
+  Board: Board
+  SelectedPiece: Id option
+  PossibleMoves: Id list option  
+}
+type Command =
+  | Move of AsyncReplyChannel<Output> * Move
+  | SelectPiece of AsyncReplyChannel<Output> * Id
+  | GetBoard of AsyncReplyChannel<Board>
 
 type StateAgent<'T>(init:'T) =
   let mailbox = MailboxProcessor.Start(fun inbox ->
@@ -32,10 +41,15 @@ type GameAgent(initFen) =
         let content = Piece(Rook White)
         let newBoard = oldBoard.Add(move.To, content)
         let newBoardState = boardState.Add newBoard
-        rc.Reply newBoardState
+        rc.Reply { Board = newBoardState
+                   SelectedPiece = None
+                   PossibleMoves = None}
         loop (command::commandHistory)
       | SelectPiece (rc, id) ->
-        rc.Reply (boardState.Get, Piece.getAllValidMoves id boardState.Get)
+        rc.Reply {
+          Board = boardState.Get
+          PossibleMoves = Some (Piece.getAllValidMoves id boardState.Get)
+          SelectedPiece = Some id }
       return! loop commandHistory
     }
     loop []
