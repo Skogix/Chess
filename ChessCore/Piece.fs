@@ -22,6 +22,14 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
       [for x = (max file rank) downto 1 do (file-x, rank-x)]
       [for x = (max file rank) downto 1 do (file-x, rank+x)]
     ]
+  let knightMoves =
+    [
+      [(file+2, rank+1);(file+2,rank-1)]
+      [(file+1, rank+2);(file-1,rank+2)]
+      [(file-2, rank+1);(file-2,rank-1)]
+      [(file+1, rank-2);(file-1,rank-2)]
+      
+    ]
   let convertToId (file, rank): Id = (file, rank)
   let removeSelected input = input <> id
   let removeOutsideBoard input =
@@ -30,6 +38,7 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
     rank <= 8 &&
     file >= 1 &&
     file <= 8
+  
   match piece with
   | Piece (Rook _) ->
     straightMoves |> List.concat
@@ -37,6 +46,8 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
     diagonalMoves |> List.concat
   | Piece (Queen _) ->
     (straightMoves @ diagonalMoves) |> List.concat
+  | Piece (Knight _) ->
+    knightMoves |> List.concat
   | _ -> []
   |> List.map convertToId
   |> List.filter removeSelected

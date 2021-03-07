@@ -1,5 +1,7 @@
 ###### 0.2
 ```
+0.247 Pawn moves
+0.246 Knight moves
 0.245 Filter outsideBoard
 0.244 Filter selected
 0.243 Diagnonal moves
