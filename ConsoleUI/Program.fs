@@ -9,7 +9,7 @@ open Ui
 let main argv =
   Console.ForegroundColor <- ConsoleColor.White
   Console.BackgroundColor <- ConsoleColor.Black
-  let huhuFen = "rnbqkbnr/pppppppp/8/8/3p4/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  let huhuFen = "rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   let agent = GameAgent(huhuFen)
 //  let huhu = agent.GetBoard 
 //  huhu |> printBoardByRank
@@ -18,7 +18,7 @@ let main argv =
   
   huhuBoard |> printBoard ByRank
   huhuSelectPiece |> printBoard ByRank
-  printfn "%A" huhuSelectPiece.PossibleMoves
+//  printfn "%A" huhuSelectPiece.PossibleMoves
 //  move |> printBoard Positions
 //  moves |> printfn "%A"
 

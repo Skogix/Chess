@@ -54,6 +54,7 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
   | Piece (Bishop _) ->
     diagonalMoves |> List.concat
   | Piece (Queen _) ->
+    (straightMoves @ diagonalMoves) |> printfn "%A"
     (straightMoves @ diagonalMoves) |> List.concat
   | Piece (Knight _) ->
     knightMoves |> List.concat
