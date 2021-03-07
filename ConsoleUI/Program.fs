@@ -14,11 +14,11 @@ let main argv =
 //  let huhu = agent.GetBoard 
 //  huhu |> printBoardByRank
   let huhuBoard = agent.GetOutput
-  let huhuSelectPiece = agent.SelectPiece (1,1)
+  let huhuSelectPiece = agent.SelectPiece (4,4)
   
-  printfn "%A" huhuSelectPiece.PossibleMoves
   huhuBoard |> printBoard ByRank
   huhuSelectPiece |> printBoard ByRank
+  printfn "%A" huhuSelectPiece.PossibleMoves
 //  move |> printBoard Positions
 //  moves |> printfn "%A"
 
