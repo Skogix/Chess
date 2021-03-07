@@ -30,6 +30,15 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
       [(file+1, rank-2);(file-1,rank-2)]
       
     ]
+  let pawnMoves =
+    [
+      match id, piece with
+      | (file, rank), Piece(Pawn White) when rank = 2 -> [(file,rank+1);(file,rank+2)]
+      | (file, rank), Piece(Pawn Black) when rank = 7 -> [(file,rank-1);(file,rank-2)]
+      | (_, rank), Piece(Pawn White) -> [file,rank+1]        
+      | (_, rank), Piece(Pawn Black) -> [file,rank-1]
+      | _ -> []
+    ]
   let convertToId (file, rank): Id = (file, rank)
   let removeSelected input = input <> id
   let removeOutsideBoard input =
@@ -48,6 +57,8 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
     (straightMoves @ diagonalMoves) |> List.concat
   | Piece (Knight _) ->
     knightMoves |> List.concat
+  | Piece (Pawn _) ->
+    pawnMoves |> List.concat
   | _ -> []
   |> List.map convertToId
   |> List.filter removeSelected
