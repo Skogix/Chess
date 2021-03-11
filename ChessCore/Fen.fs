@@ -8,7 +8,7 @@ let createBoard (fen:Fen): Board =
     match char with
     | '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8' ->
       let toInt = char |> System.Char.GetNumericValue |> int
-      [for x = 1 to toInt do ['.']]
+      [for _ = 1 to toInt do ['.']]
     | _ -> [[char]]
   let charToPiece (char:char): Content =
     let color =
@@ -24,6 +24,7 @@ let createBoard (fen:Fen): Board =
       | 'q' -> Piece (Queen color)
       | 'k' -> Piece (King color)
       | '.' -> Empty
+      | _ -> failwith "createBoard.charToPiece"
     piece
   pieces
   |> Array.filter (fun char -> char <> '/')

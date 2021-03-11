@@ -1,16 +1,20 @@
 module ChessCore.Piece
 
 open ChessCore.Domain
-
 let getAllValidMoves (id:Id) (board:Board): Id list =
-  let piece =
-    printfn "map.find %A" (board |> Map.find id)
-    printfn "Id: %A" id
-    board |> Map.find id
+  let piece = board |> Map.find id
   let (file, rank) = id
-  let straightMoves =
+  let removeSelected input = input <> id
+  let removeOutsideBoard input =
+    let file, rank = input
+    rank >= 1 &&
+    rank <= 8 &&
+    file >= 1 &&
+    file <= 8
+  let convertToId (file, rank): Id = (file, rank)
+  let straightMoves: Id list list=
     [
-      [for x = 8 downto file do (x, rank)]
+      [for x = 8 downto file do (x, rank)] 
       [for x = 1 to file do (x, rank)]
       [for x = 8 downto rank do (file, x)]
       [for x = 1 to rank do (file, x)]
@@ -28,7 +32,6 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
       [(file+1, rank+2);(file-1,rank+2)]
       [(file-2, rank+1);(file-2,rank-1)]
       [(file+1, rank-2);(file-1,rank-2)]
-      
     ]
   let pawnMoves =
     [
@@ -39,28 +42,29 @@ let getAllValidMoves (id:Id) (board:Board): Id list =
       | (_, rank), Piece(Pawn Black) -> [file,rank-1]
       | _ -> []
     ]
-  let convertToId (file, rank): Id = (file, rank)
-  let removeSelected input = input <> id
-  let removeOutsideBoard input =
-    let file, rank = input
-    rank >= 1 &&
-    rank <= 8 &&
-    file >= 1 &&
-    file <= 8
   
-  match piece with
-  | Piece (Rook _) ->
-    straightMoves |> List.concat
-  | Piece (Bishop _) ->
-    diagonalMoves |> List.concat
-  | Piece (Queen _) ->
-    (straightMoves @ diagonalMoves) |> printfn "%A"
-    (straightMoves @ diagonalMoves) |> List.concat
-  | Piece (Knight _) ->
-    knightMoves |> List.concat
-  | Piece (Pawn _) ->
-    pawnMoves |> List.concat
-  | _ -> []
-  |> List.map convertToId
-  |> List.filter removeSelected
-  |> List.filter removeOutsideBoard
+  let allMoves =
+    match piece with
+    | Piece (Rook _) -> straightMoves 
+    | Piece (Bishop _) -> diagonalMoves 
+    | Piece (Queen _) -> (straightMoves @ diagonalMoves) 
+    | Piece (Knight _) -> knightMoves 
+    | Piece (Pawn _) -> pawnMoves 
+    | _ -> []
+  let checkBlockedPath (path:Id list) =
+    path
+    |> List.filter removeSelected
+    |> List.filter removeOutsideBoard
+    |> List.rev
+    |> print
+  let removeAllBlockedPaths =
+    allMoves
+    |> List.map checkBlockedPath
+  let output = 
+    allMoves
+    |> List.rev
+    |> List.concat
+    |> List.map convertToId
+    |> List.filter removeSelected
+    |> List.filter removeOutsideBoard
+  output

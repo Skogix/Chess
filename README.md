@@ -1,7 +1,7 @@
 ###### 0.2
 ```
-0.251 CheckBlock
-0.250 CheckCapture
+0.251 checkCapture
+0.250 checkBlock
 0.247 Pawn moves
 0.246 Knight moves
 0.245 Filter outsideBoard

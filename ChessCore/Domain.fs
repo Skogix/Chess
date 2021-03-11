@@ -58,3 +58,6 @@ let emptyBoard: Board =
   boardIds
   |> List.map (fun id -> (id, Empty))
   |> Map.ofList
+let print x =
+  printfn "%A" x
+  x
